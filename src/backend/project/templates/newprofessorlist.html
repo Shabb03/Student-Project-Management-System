@@ -1,0 +1,15 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}List of New Professors{% endblock %}
+
+{%  block content %}
+    <h1>List of New Professors</h1>
+
+    <ul>
+    {% for p in professors %}
+        <li>
+            <p>{{ p.name }} -- {{ p.name }} -- <a href="/acceptnewprofessor/{{p.user.username}}">Allow</a> -- <a href="/rejectnewprofessor/{{p.user.username}}">Reject</a></p>
+        </li>
+    {% endfor %}
+    </ul>
+{%  endblock %}

@@ -1,0 +1,11 @@
+{% extends 'studentbase.html' %}
+
+{% block title %}Proposal Form{% endblock %}
+
+{%  block content %}
+    <form action="" method=POST>
+    {% csrf_token %}
+    {{ form.as_table }}
+    <button type="submit">SAVE</button>
+    </form>
+{%  endblock %}

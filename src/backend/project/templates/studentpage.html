@@ -1,0 +1,23 @@
+{% extends 'studentbase.html' %}
+
+{% block title %}Student Homepage{% endblock %}
+
+{%  block content %}
+    <h1>Welcome {{student.name}}</h1>
+    <br>
+    <h1>Timetable</h1>
+    <br>
+    {% if demonstration %}
+    <h3>Demonstration</h3>
+    <h4>{{demonstration.timetable.date}} -- {{demonstration.timetable.time}} -- {{demonstration.timetable.venue}}</h4>
+    {% endif %}
+    <br>
+    {% if meetings %}
+    <h3>Meetings</h3>
+    <ul>
+        {% for m in meetings %}
+        <li>{{m.title}} -- {{m.date}} -- {{m.time}} -- </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{%  endblock %}

@@ -1,0 +1,30 @@
+{% extends 'professorbase.html' %}
+
+{% block title %}Meeting History{% endblock %}
+
+{%  block content %}
+    {% if empty %}
+    <h1>You have no Meetings</h1>
+    {% else %}
+    <h1>Pending Approval</h1>
+    <ul>
+    {% for p in pending %}
+        <li>{{p.student.name}} -- {{p.title}} -- {{p.date}} -- {{p.time}}</li>
+    {% endfor %}
+    </ul>
+    <br>
+    <h1>Accepted Meetings</h1>
+    <ul>
+    {% for a in accepted %}
+        <li>{{a.student.name}} -- {{a.title}} -- {{a.date}} -- {{a.time}}</li>
+    {% endfor %}
+    </ul>
+    <br>
+    <h1>Rejected</h1>
+    <ul>
+    {% for r in rejected %}
+        <li>{{r.student.name}} -- {{r.title}} -- {{r.date}} -- {{r.time}}</li>
+    {% endfor %}
+    {% endif %}
+    </ul>
+{%  endblock %}

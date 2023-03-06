@@ -1,0 +1,15 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}List of Professors{% endblock %}
+
+{%  block content %}
+    <h1>List of Professors Time Slots</h1>
+
+    <ul>
+    {% for t in times %}
+        <li>
+            {{ t.professor.name }} -- {{ t.date }} -- {{ t.time }}
+        </li>
+    {% endfor %}
+    </ul>
+{%  endblock %}

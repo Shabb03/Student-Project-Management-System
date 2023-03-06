@@ -1,0 +1,17 @@
+{% extends 'professorbase.html' %}
+
+{% block title %}List of Student Proposals{% endblock %}
+
+{%  block content %}
+    {% if empty %}
+    <h1>You Currently have no Proposals</h1>
+    {% else %}
+    <ul>
+        {% for p in proposals %}
+        <li>{{p.proposal.title}}
+            <a href="/proposalslist/{{p.proposal.id}}">View Proposal</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{%  endblock %}

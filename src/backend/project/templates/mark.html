@@ -1,0 +1,33 @@
+{% extends 'studentbase.html' %}
+
+{% block title %}Project Mark{% endblock %}
+
+{%  block content %}
+    <h1>{{mark.title}}</h1>
+    <br>
+    <h3>Total Grade: {{mark.total_marks}}</h3>
+    <br>
+    <h3>Grade for {{mark.student.name}}</h3>
+    <br>
+    <p>Functional Specification Report: {{mark.srs_report}}</p>
+    <p>Functional Specification Mark: {{mark.srs_mark}}</p>
+    <br>
+    <p>Design Report: {{mark.design_report}}</p>
+    <p>Design Mark: {{mark.design_mark}}</p>
+    <br>
+    <p>Code Implementation Report: {{mark.implementation_report}}</p>
+    <p>Code Implementation Mark: {{mark.implementation_mark}}</p>
+    <br>
+    <p>Testing Report: {{mark.testing_report}}</p>
+    <p>Testing Mark: {{mark.testing_mark}}</p>
+    <br>
+    <p>Documentation Report: {{mark.documentation_report}}</p>
+    <p>Documentation Mark: {{mark.documentation_mark}}</p>
+    <br>
+    <p>Demonstration Report: {{mark.demonstration_report}}</p>
+    <p>Demonstration Mark: {{mark.demonstration_mark}}</p>
+    <br>
+    <p>Video Report: {{mark.video_report}}</p>
+    <p>Video Mark: {{mark.video_mark}}</p>
+    <br>
+{%  endblock %}

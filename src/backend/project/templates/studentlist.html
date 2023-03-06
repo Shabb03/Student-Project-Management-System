@@ -1,0 +1,25 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}List of Professors{% endblock %}
+
+{%  block content %}
+    <h1>List of Students</h1>
+
+    <h3>Accepted Students</h3>
+    <ul>
+    {% for a in accepted_students %}
+        <li>
+            <p>{{ a.student.name }} -- {{ a.professor.name }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <h3>Not Accepted Students</h3>
+    <ul>
+    {% for student in b %}
+        <li>
+            <p>{{ student.name }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{%  endblock %}

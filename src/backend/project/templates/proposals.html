@@ -1,0 +1,20 @@
+{% extends 'studentbase.html' %}
+
+{% block title %}Proposals{% endblock %}
+
+{%  block content %}
+    {% if sent %}
+        <h1>You have submitted your proposal to {{sent_proposal.professor.name}}</h1>
+    {% else %}
+        <ul>
+            <li>Proposal Form</li>
+            <li><a href='/proposals/{{proposal.id}}'>Edit</a></li>
+        </ul>
+        <br>
+        <ul>
+            {% for p in professors %}
+                <li>{{p.name}} -- {{p.email}} -- <a href='/sendproposal/{{p.name}}'>Submit Proposal</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{%  endblock %}

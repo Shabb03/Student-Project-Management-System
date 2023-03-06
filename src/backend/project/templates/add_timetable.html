@@ -1,0 +1,22 @@
+{% extends 'professorbase.html' %}
+
+{% block title %}Add To Demonstration Timetable{% endblock %}
+
+{%  block content %}
+    <form action="." method="POST">
+    {% csrf_token %}
+    {{ form.as_table }}
+    <button type="submit">ADD TIME</button>
+    </form>
+    <br>
+    {% if empty %}
+        <h1>You currently have no available times</h1>
+    {% else %}
+        <h1>Current Available Times</h1>
+        <ul>
+        {% for t in times %}
+            <li>{{t.date}} -- {{t.time}} -- {{t.venue}} -- <a href="/removetime/{{t.id}}">Remove Time</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{%  endblock %}

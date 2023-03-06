@@ -1,0 +1,24 @@
+{% extends 'professorbase.html' %}
+
+{% block title %}Student Project{% endblock %}
+
+{%  block content %}
+    <h1>{{proposal.title}}</h1>
+    <p>By {{proposal.student.name}}</p>
+    <p>Demonstration at {{demonstration.timetable.date}}, {{demonstration.timetable.time}}, {{demonstration.timetable.venue}}</p>
+    <br>
+    <p>{{proposal.introduction}}</p>
+    <p>{{proposal.outline}}</p>
+    <p>{{proposal.background}}</p>
+    <p>{{proposal.goals}}</p>
+    <p>{{proposal.tools}}</p>
+    <br>
+    <a href="{{files.srs.url}}" target="_blank">Functional Specification</a>
+    <a href="{{files.documentation.url}}" target="_blank">Documentation</a>
+    <br>
+    {% if mark %}
+    <a href="/viewmark/{{marked.id.id}}">View Project Mark</a>
+    {% else %}
+    <a href="/projectmark/{{proposal.id}}">Mark Project</a>
+    {% endif %}
+{%  endblock %}

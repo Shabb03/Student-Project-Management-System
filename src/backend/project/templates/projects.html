@@ -1,0 +1,19 @@
+{% extends 'professorbase.html' %}
+
+{% block title %}List of Student Projects{% endblock %}
+
+{%  block content %}
+    <h1>Search for Student Project by Title</h1>
+    <form class="d-flex" method="POST" action="{% url 'Search-Projects' %}">
+        {% csrf_token %}
+        <input class="form-control m-2" type="search" placeholder="Search" name="query">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </form>
+    <h1>List of Student Projects</h1>
+    <ul>
+    {% for p in projects %}
+        <li>{{p.proposal.title}} -- {{p.student.name}} -- {{p.submitted}} -- {{p.accepted}} -- {{p.srs}} -- {{p.documentation}} -- {{p.mark}}</li>
+        <a href="/projects/{{p.proposal.id}}">View Project</a>
+    {% endfor %}
+    </ul>
+{%  endblock %}

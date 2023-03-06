@@ -1,0 +1,11 @@
+{% extends 'professorbase.html' %}
+
+{% block title %}Mark Student Project{% endblock %}
+
+{%  block content %}
+    <form action="./{{pid}}" method="POST">
+    {% csrf_token %}
+    {{ form.as_table }}
+    <button type="submit">SUBMIT</button>
+    </form>
+{%  endblock %}

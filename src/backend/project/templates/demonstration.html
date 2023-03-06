@@ -1,0 +1,12 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}Demonstration Timetable{% endblock %}
+
+{%  block content %}
+
+<form class="d-flex" method="post" action="{% url 'Generating-Timetable' %}">
+    {% csrf_token %}
+    <input class="form-control m-2" type="date" placeholder="Date" name="date">
+    <button class="btn btn-outline-secondary" type="submit">SUBMIT</button>
+</form>
+{%  endblock %}

@@ -1,0 +1,20 @@
+{% extends 'professorbase.html' %}
+
+{% block title %}Student Proposal{% endblock %}
+
+{%  block content %}
+    <h1>{{proposal.title}}</h1>
+    <br>
+    <p>{{proposal.introduction}}</p>
+    <p>{{proposal.outline}}</p>
+    <p>{{proposal.background}}</p>
+    <p>{{proposal.goals}}</p>
+    <p>{{proposal.tools}}</p>
+
+    <a href="/acceptproposal/{{proposal.id}}">Accept Proposal</a>
+    <form class="d-flex" method="POST" action="/rejectproposal/{{proposal.id}}">
+        {% csrf_token %}
+        <input class="form-control m-2" type="text" placeholder="Reason of Rejection" name="message">
+        <button class="btn btn-outline-secondary" type="submit">Reject Proposal</button>
+    </form>
+{%  endblock %}

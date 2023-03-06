@@ -1,0 +1,17 @@
+{% extends 'studentbase.html' %}
+
+{% block title %}Timetable{% endblock %}
+
+{%  block content %}
+    {% if accept %}
+        <h1>You have A Demonstration on {{accepted.timetable.date}} -- {{accepted.timetable.time}} -- {{accepted.timetable.venue}}</h1>
+    {% elif empty %}
+        <h1>There are currently no available Timetable Slots</h1>
+    {% else %}
+    <ul>
+    {% for t in timetable %}
+        <li>{{t.professor.name}} -- {{t.date}} -- {{t.time}} -- {{t.venue}} -- <a href="/accepttime/{{t.id}}">Accept Time</a></li>
+    {% endfor %}
+    {% endif %}
+    </ul>
+{%  endblock %}

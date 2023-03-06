@@ -1,0 +1,37 @@
+{% extends 'studentbase.html' %}
+
+{% block title %}Meeting{% endblock %}
+
+{%  block content %}
+    <form action="." method="POST">
+    {% csrf_token %}
+    {{ form.as_table }}
+    <button type="submit">SUBMIT</button>
+    </form>
+    <br>
+    {% if meetings %}
+    <h1>Meetings from your Supervisor</h1>
+    <ul>
+    {% for m in meetings %}
+        <li>{{m.title}} -- {{m.date}} -- {{m.time}}</li>
+        <a href="/studentaccepttime/{{m.id}}">Accept</a>
+        <a href="/studentrejecttime/{{m.id}}">Reject</a>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <h1>No Meetings from your Supervisor</h1>
+    {% endif %}
+    <br>
+    {% if pending %}
+    <h1>Due Meetings</h1>
+        <ul>
+        {% for p in pending %}
+            <li>{{p.title}} -- {{p.date}} -- {{p.time}}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+    <h1>Currently no Meetings due</h1>
+    {% endif %}
+    <br>
+    <a href="/studentmeetinghistory">View History</a>
+{%  endblock %}

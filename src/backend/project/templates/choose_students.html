@@ -1,0 +1,41 @@
+{% extends 'professorbase.html' %}
+
+{% block title %}Choose Student for Meeting{% endblock %}
+
+{%  block content %}
+    {% if students %}
+    <h1>Create a Meeting with a student</h1>
+    <ul>
+    {% for s in students %}
+        <li>{{s.student.name}} -- <a href='/meeting/{{s.id}}'>Create Meeting</a></li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <h1>You currently have no students to supervise</h1>
+    {% endif %}
+    <br>
+    <h1>Meetings from your Students</h1>
+    {% if meetings %}
+    <ul>
+    {% for m in meetings%}
+        <li>{{m.student.name}} -- {{m.title}} -- {{m.date}} -- {{m.time}}</li>
+        <a href="/accepttime/{{m.id}}">Accept</a>
+        <a href="/rejecttime/{{m.id}}">Reject</a>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <h3>Currently no Meetings from students</h3>
+    {% endif %}
+    <br>
+    <a href="/meetinghistory">View History</a>
+    <br>
+    {% if pending %}
+    <ul>
+        {% for p in pending %}
+        <li>{{p.title}} -- {{p.date}} -- {{p.time}}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <h1>No Meetings due</h1>
+    {% endif %}
+{%  endblock %}
