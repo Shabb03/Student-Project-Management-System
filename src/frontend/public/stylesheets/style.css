@@ -1,0 +1,305 @@
+html {
+    height: 100%;
+}
+
+body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+    color: #00B7FF;
+}
+
+:root
+{
+    --bg-white:#ffffff;
+    --bg-shade:#e4e4e4;
+    --color_teal:#008080;
+    --color_blue:#1e05fd;
+    --text-dark:#000000;
+    --text-light:#ffffff;
+}
+
+.error1-bg {
+    background-image: url("/images/404.png");
+    height: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.error2-bg {
+    background-color: #1e05fd;
+    height: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
+.content-wrap {
+    padding-bottom: 2.5rem;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 2.5rem; 
+}
+
+.navbar {
+    background: var(--bg-shade) !important;
+    color: var(--text-dark) !important;
+}
+
+.navbar-start a:hover{
+    background: var(--color_teal) !important;
+    color: var(--text-light) !important;
+}
+
+.nav-active {
+    background: var(--color_teal) !important;
+    color: var(--text-light) !important;
+}
+
+.my-button {
+    background: var(--color_teal) !important;
+    color: var(--text-light) !important;
+}
+
+.my-button:hover {
+    background: var(--color_blue) !important;
+    color: var(--text-light) !important;
+}
+
+.is-teal-static {
+    background: var(--color_teal) !important;
+    color: var(--text-light) !important;
+}
+
+.is-teal {
+    background: var(--color_teal) !important;
+    color: var(--text-light) !important;
+}
+
+.is-teal:hover {
+    background: var(--color_blue) !important;
+    color: var(--text-light) !important;
+}
+
+.formcol {
+    background: var(--bg-shade) !important;
+    width: 500px;
+    margin: 5% auto 10%;
+    padding: 5%;
+}
+
+.proposalformcol {
+    background: var(--bg-shade) !important;
+    width: 90%;
+    margin: 8% auto 10%;
+    padding: 5%;
+}
+
+.table {
+    background: var(--bg-shade) !important;
+}
+
+.message {
+    background: var(--bg-shade) !important;
+    width: 500px;
+    margin: 1% auto;
+}
+
+.homecontainer {
+    display: flex;
+}
+
+.homepage-left {
+    width: 70%;
+}
+
+.homepage-right {
+    width: 30%;
+    margin: 0.5%;
+    border-style: solid;
+    border-width: 5px;
+    border-color: var(--color_blue);
+}
+
+.admin-left {
+    width: 33%;
+}
+
+.admin-middle {
+    width: 33%;
+}
+
+.admin-right {
+    width: 33%;
+}
+
+.tile-link:hover {
+    color: var(--color_blue);
+}
+
+.customcontainer {
+    display: flex;
+}
+
+.custompage {
+    width: 50%;
+}
+
+.container-60-40 {
+    display: flex;
+}
+
+.page-60 {
+    width: 60%;
+    margin-right: 1%;
+}
+
+.page-40 {
+    width: 40%;
+    margin-left: 1%;
+}
+
+.assignTable {
+    border-style: solid !important;
+    border-width: 3px !important;
+    border-color: var(--color_blue) !important;
+}
+
+.input {
+    border-style: solid !important;
+    border-width: 3px !important;
+    border-color: var(--color_blue) !important;
+}
+
+.drop-down {
+    border-style: solid !important;
+    border-width: 3px !important;
+    border-color: var(--color_blue) !important;
+}
+
+.textarea {
+    border-style: solid !important;
+    border-width: 3px !important;
+    border-color: var(--color_blue) !important;
+}
+
+.p-link {
+    color: blue;
+}
+
+.p-link:hover {
+    color: red;
+    text-decoration: underline;
+}
+
+.hover{
+    color: lightseagreen !important;
+}
+
+.hover:hover{
+    color: red !important;
+}
+
+.choice-is-expanded {
+    width: 100% !important;
+}
+
+.is-ancestor {
+    margin: 10px 50px !important;
+}
+
+.is-child {
+    background: var(--bg-shade) !important;
+    border-style: solid !important;
+    border-color: var(--color_blue) !important;
+    font-size: 120% !important;
+    color: black !important;
+}
+
+#search_bar {
+    width: 50% !important;
+    margin: 3% auto !important;
+}
+
+.bg-blue {
+    background: var(--color_blue) !important;
+    color: white !important;
+}
+
+#modal-text {
+    color: white;
+    background: var(--color_teal);
+    padding: 10px;
+    border-radius: 9999px;
+    padding-left: calc(1em + 0.25em);
+    padding-right: calc(1em + 0.25em);
+
+    cursor: pointer;
+    justify-content: center;
+    padding-bottom: calc(0.5em - 1px);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: calc(0.5em - 1px);
+    text-align: center;
+    white-space: nowrap;
+}
+
+#modal-text:hover {
+    background: var(--color_blue);
+}
+
+#srs-modal-text {
+    color: white;
+    background: var(--color_teal);
+    padding: 10px;
+    border-radius: 9999px;
+    padding-left: calc(1em + 0.25em);
+    padding-right: calc(1em + 0.25em);
+
+    cursor: pointer;
+    justify-content: center;
+    padding-bottom: calc(0.5em - 1px);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: calc(0.5em - 1px);
+    text-align: center;
+    white-space: nowrap;
+}
+
+#doc-modal-text {
+    color: white;
+    background: var(--color_teal);
+    padding: 10px;
+    border-radius: 9999px;
+    padding-left: calc(1em + 0.25em);
+    padding-right: calc(1em + 0.25em);
+
+    cursor: pointer;
+    justify-content: center;
+    padding-bottom: calc(0.5em - 1px);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: calc(0.5em - 1px);
+    text-align: center;
+    white-space: nowrap;
+}
+
+#srs-modal-text:hover {
+    background: var(--color_blue);
+}
+
+#doc-modal-text:hover {
+    background: var(--color_blue);
+}

@@ -1,0 +1,128 @@
+<%- include('header_p') -%>
+<br>
+<br>
+<div class="homecontainer">
+    <div class="homepage-left">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="home-title" class="is-size-1 has-text-centered">Welcome</h1>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="undertaken" class="is-size-2 has-text-centered"></h1>
+            </div>
+        </div>
+    </div>
+    <div class="homepage-right">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="meeting-title" class="is-size-3 has-text-centered">Meetings</h1>
+            </div>
+        </div>
+        <table id="timetable-table" class="table is-fullwidth is-hoverable">
+            <thead id="tablehead">
+                <tr>
+                    <th>DATE</th>
+                    <th>TIME</th>
+                </tr>
+            </thead>
+            <tbody id="meetinglist">
+          
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    //function to display a table row with the meeting details
+    function displayTable(meeting) {
+        let d = meeting['date'];
+        let t = meeting['time'];
+
+        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+        let date = new Date(d);
+        let displayDate = date.getDate() + " " + months[date.getMonth()];
+        let newTime = t.split(":");
+        let time = newTime[0] + ":" + newTime[1];
+
+        let htmlString = "<tr><td>"+ displayDate +"</td><td>" + time + "</td></tr>";
+        let row = document.getElementById("meetinglist");
+        row.innerHTML += htmlString;  
+    }
+
+    //function to build the timetable and display a list of all upcoming meetings
+    function buildTable(){
+        let token = localStorage.getItem("access");
+        fetch("http://127.0.0.1:8000/api/upmeetings/", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            if (data.length == 0) {
+                let table = document.getElementById("timetable-table");
+                let title = document.getElementById("meeting-title");
+                table.remove();
+                title.innerHTML = "No Upcoming Meetings";
+            }
+            else {
+                data.forEach(element => {
+                    displayTable(element);
+                });
+            }
+        })
+    }
+
+    //function to display a welcome title with the professors name
+    function welcome() {
+        fetch("http://127.0.0.1:8000/api/professors/", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=> {
+            let professor = data[0];
+            let name = professor['name'];
+            let title = document.getElementById("home-title");
+            title.innerHTML = "Welcome " + name;
+            
+            fetch("http://127.0.0.1:8000/api/status/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=> {
+                let count = 0;
+                data.forEach(element=>{
+                    let accepted = element['accepted'];
+                    if (accepted == true) {
+                        count += 1;
+                    }
+                })
+                let title = document.getElementById("undertaken");
+                title.innerHTML = "You Are Currently Supervising " + count + " Students";
+            })
+        })
+    }
+
+    buildTable();
+    welcome();
+</script>
+<%- include('footer') -%>

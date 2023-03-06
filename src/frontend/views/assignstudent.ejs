@@ -1,0 +1,177 @@
+<%- include('header_a') -%>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 class="is-size-1 has-text-centered">Assign Students to a Supervisor</h1>
+    </div>
+</div>
+<br>
+<br>
+
+<div class="container-60-40">
+    <div class="page-60">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="student-table-title" class="is-size-2 has-text-centered">Students</h1>
+            </div>
+        </div>
+        <br>
+        <table id="no-supervisors" class="table is-fullwidth is-hoverable assignTable">
+            <thead id="tablehead">
+                <tr>
+                    <th>NAME</th>
+                    <th>EMAIL</th>
+                    <th>STUDENT NUMBER</th>
+                    <th>COURSE CODE</th>
+                    <th>YEAR</th>
+                    <th>CHOOSE</th>
+                </tr>
+            </thead>
+            <tbody id="default_student_list">
+  
+            </tbody>
+        </table>
+    </div>
+    <div class="page-40">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="professor-table-title" class="is-size-2 has-text-centered">Professors</h1>
+            </div>
+        </div>
+        <br>
+        <table id="professors" class="table is-fullwidth is-hoverable assignTable">
+            <thead id="tablehead">
+                <tr>
+                    <th>NAME</th>
+                    <th>EMAIL</th>
+                    <th>CHOOSE</th>
+                </tr>
+            </thead>
+            <tbody id="professor_list">
+  
+            </tbody>
+        </table>
+    </div>
+</div>
+<br>
+<br>
+
+<div class="header">
+    <div class="inner-header flex">
+        <h1 class="has-text-centered"><button id="assignButton" class="button is-teal is-medium" type="submit">Assign</button></h1>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+        //get a list of all chosen students and chosen professor, then for each student, send a request to assign that student to the chosen professor
+        function assignStudents() {
+
+            let radioboxes = document.getElementsByName('rad')
+            radioboxes.forEach((item) => {
+                if(item.checked) {
+                    let professor = item.value;
+
+                    let checkboxes = document.getElementsByName('check')
+                    checkboxes.forEach((item) => {
+                        if(item.checked) {
+                            let student = item.value;
+
+                            fetch("http://127.0.0.1:8000/apiassignstudent/", {
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer '+localStorage.getItem("access")
+                            },
+	                        body: JSON.stringify({student: student, professor: professor})
+                            })
+                            .then(resp=>resp.json())
+                            .then(data=>{
+                            })
+                        }
+                    })
+                }
+                window.location.reload();
+            })
+        }
+
+        //function to display a table row for the table of students with given student details
+        function displayTable1(students) {
+            let name = students['name'];
+            let email = students['email'];
+            let student_id = students['student_id'];
+            let course = students['course'];
+            let year = students['year'];
+            let pk = students['student_url'];
+
+            let htmlString = "<tr><td>"+ name +"</td><td>"+ email +"</td><td>"+ student_id +"</td><td>"+ course +"</td><td>"+ year +"</td><td><label class=\"checkbox\"><input type=\"checkbox\" name=\"check\" value=\""+pk+"\"></label></td></tr>";
+            let row = document.getElementById("default_student_list");
+            row.innerHTML += htmlString;  
+        }
+
+        //function to display a table row for the table of professors with given professor details
+        function displayTable2(profs) {
+            let name = profs['name'];
+            let email = profs['email'];
+            let pk = profs['professor_url'];
+
+            let htmlString = "<tr><td>"+ name +"</td><td>"+ email +"</td><td><label class=\"radio\"><input type=\"radio\" name=\"rad\" value=\""+pk+"\"></label></td></tr>";
+            let row = document.getElementById("professor_list");
+            row.innerHTML += htmlString;  
+        }
+
+        //function to build and display the table of students that do not have a project supervisor
+        function buildTable1(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/d_students", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                if (data.length == 0) {
+                }
+                else {
+                    data.forEach(element => {
+                        displayTable1(element);
+                    });
+                }
+            })
+        }
+
+        //function to build and display the table of all professors
+        function buildTable2(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/professors/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    displayTable2(element);
+                });
+            })
+        }
+
+        let submitButton = document.getElementById("assignButton");
+        submitButton.addEventListener('click', assignStudents);
+
+        buildTable1();
+        buildTable2();
+</script>
+<%- include('footer') -%>

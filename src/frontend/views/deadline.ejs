@@ -1,0 +1,91 @@
+<%- include('header_a') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Set Deadlines</h1>
+        </div>
+    </div>
+
+    <form id="deadline-form" class="box formcol"> 
+        <div class="field">
+            <label id="proposal-dl-label" class="label" for="proposal-dl-input">Proposal Deadline: </label>
+            <div class="control">
+                <input class="input" type="date" id="proposal-dl" name="proposal-dl-input" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label id="srs-dl-label"class="label" for="srs-dl-input">Functional Specification Deadline: </label>
+            <div class="control">
+                <input class="input" type="date" id="srs-dl" name="srs-dl-input" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label id="doc-dl-label"class="label" for="doc-dl-input">Project Deadline: </label>
+            <div class="control">
+                <input class="input" type="date" id="doc-dl" name="doc-dl-input" required>
+            </div>
+        </div>
+        <button id="deadline-submit" class="button is-teal is-rounded" type="submit">Set Deadlines</button>
+    </form> 
+
+    <script>
+        //fetch request to submit the added deadline dates and store them into the database
+        function formValidator(event){
+            event.preventDefault();
+
+            let proposal = document.getElementById("proposal-dl").value;
+            let srs = document.getElementById("srs-dl").value;
+            let documentation = document.getElementById("doc-dl").value;
+
+            fetch("http://127.0.0.1:8000/apisetdeadline/", {
+            method: 'POST',
+            headers: {
+	            'Accept': 'application/json',
+	            'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+            body: JSON.stringify({proposal: proposal, srs: srs, documentation: documentation})
+	        })
+            .then(response=>response.json())
+            .then(data=>{
+                window.location.reload();
+            });
+        }
+
+        //fetch request to get the set deadlines if already exisitng and display them, otherwise do nothing
+        function checkDeadline() {
+            fetch("http://127.0.0.1:8000/api/deadline/", {
+            method: 'GET',
+            headers: {
+	            'Accept': 'application/json',
+	            'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            }
+	        })
+            .then(response=>response.json())
+            .then(data=>{
+                if (data.length > 0) {
+                    let deadline = data[0];
+                    let proposal_date = deadline['proposal'];
+                    let srs_date = deadline['srs'];
+                    let doc_date = deadline['documentation'];
+
+                    let proposal = proposal_date.split('-');
+                    let srs = srs_date.split('-')
+                    let doc = doc_date.split('-')
+
+                    document.getElementById("proposal-dl-label").innerHTML += " ["+proposal[2]+"/"+proposal[1]+"/"+proposal[0]+"]";
+                    document.getElementById("srs-dl-label").innerHTML += " ["+srs[2]+"/"+srs[1]+"/"+srs[0]+"]";
+                    document.getElementById("doc-dl-label").innerHTML += " ["+doc[2]+"/"+doc[1]+"/"+doc[0]+"]";
+                }
+            });
+        }
+
+        let form = document.getElementById("deadline-form");
+        form.addEventListener('submit', formValidator)
+
+        checkDeadline();
+    </script>
+
+<%- include('footer') -%>

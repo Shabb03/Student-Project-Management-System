@@ -1,0 +1,162 @@
+<%- include('header_a') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Venues for Demonstration</h1>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <table class="table is-fullwidth has-background-grey-lighter">
+        <thead id="tablehead">
+            <tr>
+                <th>LOCATION</th>
+                <th>NO. OF ROOMS</th>
+                <th class="has-text-right">EDIT</th>
+                <th class="has-text-right">REMOVE</th>
+            </tr>
+        </thead>
+        <tbody id="venuelist">
+      
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Add a Venue</h1>
+        </div>
+    </div>
+
+    <form id="venue-form" class="box formcol"> 
+        <div class="field">
+            <label class="label" for="venue-input">Venue</label>
+            <div class="control has-icons-left">
+                <input class="input" type="text" id="venue" name="venue-input" placeholder="Q-Business School" required>
+                <span class="icon is-small is-left">
+                    <i class="fa-solid fa-location-dot"></i>
+                </span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label" for="places-input">Number of Places per hour</label>
+            <div class="control has-icons-left">
+                <input class="input" type="number" id="places" name="places-input" placeholder="10" required>
+                <span class="icon is-small is-left">
+                    <i class="fa-solid fa-thumbtack"></i>
+                </span>
+            </div>
+        </div>
+        <button id="add-venue-submit" class="button is-teal is-rounded" type="submit">Add Venue</button>
+    </form> 
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script>
+        //fetch request to submit the input venue and number of available places and store them into the database
+        function formValidator(event){
+            event.preventDefault();
+
+            let venue = document.getElementById("venue").value;
+            let places = document.getElementById("places").value;
+
+            fetch("http://127.0.0.1:8000/apiaddvenue/", {
+            method: 'POST',
+            headers: {
+	            'Accept': 'application/json',
+	            'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+            body: JSON.stringify({venue: venue, places: places})
+	        })
+            .then(response=>response.json())
+            .then(data=>{
+                console.log("Added Venue");
+            });
+            window.location.reload();
+        }
+
+        //function to edit an added venue and update the details in the database
+        function editVenue(id) {
+            let venue = document.getElementById("table-venue"+id).value;
+            let places = document.getElementById("table-places"+id).value;
+
+            fetch('http://127.0.0.1:8000/apieditvenue/', {
+            'method':'POST',
+            'headers':{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+            'body': JSON.stringify({id:id, venue:venue, places:places})
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                window.location.reload()
+            })
+        }
+
+        //function to remove an added venue and remove it from the database
+        function removeVenue(id) {
+            fetch('http://127.0.0.1:8000/apiremovevenue/', {
+            'method':'POST',
+            'headers':{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+            'body': JSON.stringify({id:id})
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+            })
+            let edit_button = document.getElementById("edit-venue-button"+id);
+            let remove_button = document.getElementById("remove-venue-button"+id);
+            edit_button.innerHTML = "-->";
+            remove_button.innerHTML = "REMOVED";
+        }
+
+        //function to display a table row with the provided venues details
+        function displayTable(ven) {
+            let venue_id = ven['id'];
+            let venue = ven['venue'];
+            let places = ven['places'];
+
+            let htmlString = "<tr><td><input class=\"input\" type=\"text\" id=\"table-venue"+venue_id+"\" name=\"table-venue-input\" value="+venue+" required></td><td><input class=\"input\" type=\"number\" id=\"table-places"+venue_id+"\" name=\"table-places-input\" value="+places+" required></td><td id=\"edit-venue-button"+venue_id+"\"><div class=\"has-text-right\"><button class=\"button is-teal\" onclick=\"editVenue("+venue_id+")\">Submit Change</button></div></td><td id=\"remove-venue-button"+venue_id+"\"><div class=\"has-text-right\"><button class=\"button is-teal\" onclick=\"removeVenue("+venue_id+")\">Remove</button></div></td></tr>";
+            let row = document.getElementById("venuelist");
+            row.innerHTML += htmlString;
+        }
+
+        //function to build a table with a list of all added venues
+        function buildTable() {
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/venues/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    displayTable(element);
+                });
+            })
+        }
+
+        let myform = document.getElementById("venue-form");
+        myform.addEventListener('submit', formValidator);	
+        buildTable();
+    </script>
+
+<%- include('footer') -%>

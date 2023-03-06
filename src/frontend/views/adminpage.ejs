@@ -1,0 +1,216 @@
+<%- include('header_a') -%>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="home-title" class="is-size-1 has-text-centered">Welcome Admin</h1>
+    </div>
+</div>
+<br>
+<br>
+<br>
+<div class="homecontainer">
+
+    <div class="admin-left">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="new-prof-count" class="is-size-3 has-text-centered">New Professors</h1>
+            </div>
+        </div>
+        <br>
+        <canvas id="newprofessorChart" style="width:100%; max-width: 100%;"></canvas>
+        <br>
+        <p class="has-text-centered">Hover Over the Chart</p>
+    </div>
+
+    <div class="admin-middle">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="" class="is-size-3 has-text-centered">Students</h1>
+            </div>
+        </div>
+        <br>
+        <canvas id="studentChart" style="width:100%; max-width: 100%;"></canvas>
+        <br>
+        <p class="has-text-centered">Hover Over the Chart</p>
+    </div>
+
+    <div class="admin-right">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 class="is-size-3 has-text-centered">Professors</h1>
+            </div>
+        </div>
+        <br>
+        <canvas id="professorChart" style="width:100%; max-width: 100%;"></canvas>
+        <br>
+        <p class="has-text-centered">Hover Over the Chart</p>
+    </div>
+
+</div>
+<br>
+<br>
+<br>
+
+<script>
+    //fetch the details for new professors and registered professors and display a pie chart displaying the data
+    function buildGraph1() {
+        let xValues = ["New", "Registered"];
+        let barColors = [
+            "#1e05fd",
+            "#00FFFF"
+        ];
+
+        let token = localStorage.getItem("access");
+        fetch("http://127.0.0.1:8000/api/newprofessors", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            let d_len = data.length;
+
+            fetch("http://127.0.0.1:8000/api/professors/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let a_len = data.length;
+                let yValues = [d_len, a_len];
+
+                new Chart("newprofessorChart", {
+                    type: "doughnut",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    }
+                }); 
+            })
+        })
+    }
+
+    //fetch the details for students without a project supervisor and students with a project supervisor and display a pie chart displaying the data
+    function buildGraph2() {
+        let xValues = ["Accepted", "Not-Accepted"];
+        let barColors = [
+            "#00FFFF",
+            "#1e05fd"
+        ];
+
+        let token = localStorage.getItem("access");
+        fetch("http://127.0.0.1:8000/api/d_students", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            let d_len = data.length;
+
+            fetch("http://127.0.0.1:8000/api/accepted/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let a_len = data.length;
+
+                let yValues = [a_len, d_len];
+
+                new Chart("studentChart", {
+                    type: "doughnut",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    }
+                }); 
+            })
+        })
+    }
+
+    //fetch the details for professors with students and professors that aren't supervising any students and display a pie chart displaying the data
+    function buildGraph3() {
+        let xValues = ["Supervising", "Not-Supervising"];
+        let barColors = [
+            "#00FFFF",
+            "#1e05fd"
+        ];
+
+        let token = localStorage.getItem("access");
+        fetch("http://127.0.0.1:8000/api/d_professors", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            let d_len = data.length;
+
+            fetch("http://127.0.0.1:8000/api/accepted/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let a_len = 0;
+                let current_prof = "";
+
+                data.forEach(element => {
+                    let prof = element['professor'];
+                        
+                    if (current_prof != prof) {
+                        a_len += 1;
+                        current_prof = prof;
+                    } 
+                });
+
+                let yValues = [a_len, d_len];
+
+                new Chart("professorChart", {
+                    type: "doughnut",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors,
+                            data: yValues
+                        }]
+                    }
+                });
+            })
+        })
+    }
+
+    buildGraph1();
+    buildGraph2();
+    buildGraph3();
+</script>
+<%- include('footer') -%>

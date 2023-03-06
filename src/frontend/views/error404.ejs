@@ -1,0 +1,105 @@
+<html>
+	<head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+        <script src="https://kit.fontawesome.com/08e4643268.js" crossorigin="anonymous"></script>
+	</head>
+	<body>
+    <div class="page-container">
+	<div class="content-wrap">
+        <div class="error1-bg">
+        
+        </div>
+        <div class="error2-bg">
+            <div class="header">
+                <div class="inner-header flex">
+                    <h1 class="is-size-1 has-text-centered has-text-white">Sorry, Page Not Found</h1>
+                </div>
+            </div>
+            <br>
+            <div class="tile is-ancestor">
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <p class="title has-text-right">--></p>
+                        <p class="subtitle has-text-right">.</p>
+                        <div class="content">
+                            <p class="has-text-right">.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <p id="profile-button" class="title has-text-centered">
+                            <a id="return-link" href="/" class="button is-medium is-teal">Return to Homepage</a>
+                        </p>
+                    </article>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <p class="title"><--</p>
+                        <p class="subtitle">.</p>
+                        <div class="content">
+                            <p>.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="header">
+                <div class="inner-header flex">
+                    <h1 id="error-url" class="is-size-3 has-text-centered has-text-white"></h1>
+                </div>
+            </div>
+        </div>
+
+		<script>
+            //function to change the link to the user's respective homepage or login page depending on the user's user type or whether the user is logged in
+            function changeLink(){
+                let link = document.getElementById("return-link");
+                
+                let token = localStorage.getItem("access");
+                if (token == null || token == "undefined") {
+
+                }
+                fetch("http://127.0.0.1:8000/api/admincheck", {
+                method: 'GET',
+                headers: {
+		            'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    "Authorization": 'Bearer '+localStorage.getItem("access")
+                }
+                })
+                .then(response=>response.json())
+                .then(data => {
+                    if ('detail' in data) {
+                        let user_type = localStorage.getItem("user_type");
+                        if (user_type == "New") {
+                            link.href = "/profile";
+                        }
+                        else if (user_type == "Student") {
+                            link.href = "/studentpage";
+                        }
+                        else if (user_type == "New_Professor") {
+                            link.href = "/waiting";
+                        }
+                        else if (user_type == "Professor") {
+                            link.href = "/professorpage";
+                        }
+                    }
+                    else {
+                        link.href = "/adminpage";
+                    }
+                })
+            }
+
+            //function to display a message with the input URL
+            function displayURL() {
+                let url = window.location.href;
+                let p = document.getElementById("error-url");
+                p.innerHTML += "The URL "+url+" you requested could not be found"; 
+            }
+
+            displayURL();
+            changeLink();
+		</script>
+<%- include('footer') -%>

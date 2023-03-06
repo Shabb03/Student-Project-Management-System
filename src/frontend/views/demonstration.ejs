@@ -1,0 +1,135 @@
+<%- include('header_a') -%>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 class="is-size-1 has-text-centered">Demonstration Timetable</h1>
+    </div>
+</div>
+<br>
+<br>
+
+<table id="demotable" class="table is-fullwidth is-bordered is-hoverable">
+    <thead id="tablehead">
+        <tr>
+            <th>STUDENT</th>
+            <th>DATE</th>
+            <th>TIME</th>
+            <th>VENUE</th>
+        </tr>
+    </thead>
+    <tbody id="demotimes">
+  
+    </tbody>
+</table>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+    //function will not work properly for unknown reasons, console.log() prints the order in a wierd manner aswell
+
+    /*function displayAssessors(assessors, id) {
+        let tableData = document.getElementById("demo"+id)
+        prof_url = assessors['assesor'];
+        console.log(prof_url);
+        fetch(prof_url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+localStorage.getItem("access")
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            let prof_name = data['name'];
+            tableData.innerHTML += "--" + prof_name + "--";
+            console.log(tableData);
+        })
+    }*/
+
+    //function to display a table row for the table of demonstration time slots with the given demonstration details
+    function displayTable(demo) {
+        let table = document.getElementById("demotimes");
+        let profs = "";
+
+        let demo_id = demo['id'];
+        let student_url = demo['student'];
+        let d = demo['date'];
+        let t = demo['time'];
+        let venue = demo['venue'];
+        //let assessors = demo['assessors'];
+
+        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+        let date = new Date(d);
+        let displayDate = date.getDate() + " " + months[date.getMonth()];
+        let newTime = t.split(":");
+        let time = newTime[0] + ":" + newTime[1];
+
+        fetch(student_url, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+localStorage.getItem("access")
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=> {
+            let name = data['name'];
+
+            fetch(venue, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let place = data['venue'];
+
+                //let htmlString = "<tr><td>"+ name +"</td><td>"+ displayDate +"</td><td>"+ time +"</td><td>"+ place +"</td><td id=demo"+demo_id+"></td></tr>";
+                let htmlString = "<tr><td>"+ name +"</td><td>"+ displayDate +"</td><td>"+ time +"</td><td>"+ place +"</td></tr>";
+                table.innerHTML += htmlString;
+
+                /*assessors.forEach(element => {
+                    displayAssessors(element, demo_id);
+                });*/
+            })
+        })
+    }
+
+    //function to build a table for the demonstration timetable
+    function buildTable(){
+        let token = localStorage.getItem("access");
+        fetch("http://127.0.0.1:8000/api/demonstration/", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            if (data.length == 0) {
+                window.location.href = "/timetable";
+            }
+            else {
+                data.forEach(element => {
+                    displayTable(element);
+                });
+            }
+        })
+    }
+
+    buildTable();
+</script>
+
+<%- include('footer') -%>

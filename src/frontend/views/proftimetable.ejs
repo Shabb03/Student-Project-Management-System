@@ -1,0 +1,119 @@
+<%- include('header_p') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Demonstration Timetable</h1>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <div id="errorMessage" class="header">
+        <div class="inner-header flex">
+            <h1 id="errorMessage-title" class="is-size-2 has-text-centered"></h1>
+        </div>
+    </div>
+
+    <table id="demotable" class="table is-fullwidth is-bordered is-hoverable">
+        <thead id="tablehead">
+            <tr>
+                <th>STUDENT</th>
+                <th>EMAIL</th>
+                <th>DATE</th>
+                <th>TIME</th>
+                <th>VENUE</th>
+            </tr>
+        </thead>
+        <tbody id="demotimes">
+      
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script>
+        //function to display a table row with the provided demonstration slots details
+        function displayTable(demo) {
+            let table = document.getElementById("demotimes");
+
+            let student_url = demo['student'];
+            let d = demo['date'];
+            let t = demo['time'];
+            let venue = demo['venue'];
+
+            const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+            let date = new Date(d);
+            let displayDate = date.getDate() + " " + months[date.getMonth()];
+            let newTime = t.split(":");
+            let time = newTime[0] + ":" + newTime[1];
+
+            fetch(student_url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=> {
+                let name = data['name'];
+                let email = data['email'];
+
+                fetch(venue, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    let place = data['venue'];
+
+                    let htmlString = "<tr><td>"+ name +"</td><td>"+ email +"</td><td>"+ displayDate +"</td><td>"+ time +"</td><td>"+ place +"</td></tr>";
+                    table.innerHTML += htmlString;
+                })
+            })
+        }
+
+        //function to build a table with the list of all demonstration timetable slots for the professor
+        function buildTable(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/demonstration/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                if (data.length == 0) {
+                    let title = document.getElementById("errorMessage-title");
+                    let table = document.getElementById("demotable");
+                    title.innerHTML = "The Timetable has not been created yet";
+                    table.remove();
+                }
+                else {
+                    let errorMessage = document.getElementById("errorMessage");
+                    errorMessage.remove();
+
+                    data.forEach(element => {
+                        displayTable(element);
+                    });
+                }
+            })
+        }
+
+        buildTable();
+    </script>
+
+<%- include('footer') -%>

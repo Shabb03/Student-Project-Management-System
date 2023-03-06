@@ -1,0 +1,147 @@
+<html>
+	<head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+        <script src="https://kit.fontawesome.com/08e4643268.js" crossorigin="anonymous"></script>
+        <script>
+            //function to redirect the user if they are already logged in
+			let token = localStorage.getItem("access");
+            if (token == null || token == "undefined") {
+
+            }
+            else {
+            fetch("http://127.0.0.1:8000/api/admincheck", {
+            method: 'GET',
+            headers: {
+		        'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(response=>response.json())
+            .then(data => {
+                if ('detail' in data) {
+                    let user_type = localStorage.getItem("user_type");
+                    if (user_type == "New") {
+                        window.location.href = "/profile";
+                    }
+                    else if (user_type == "Student") {
+                        window.location.href = "/studentpage";
+                    }
+                    else if (user_type == "New_Professor") {
+                        window.location.href = "/waiting";
+                    }
+                    else if (user_type == "Professor") {
+                        window.location.href = "/professorpage";
+                    }
+                }
+                else {
+                    window.location.href = "/adminpage";
+                }
+            })
+            }
+		</script>
+	</head>
+	<body>
+    <div class="page-container">
+	<div class="content-wrap">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="register-title" class="is-size-1 has-text-centered">Register</h1>
+            </div>
+        </div>
+        <br>
+        <br>
+
+        <div id="register-button">
+        </div>
+        
+        <form id="register_form" class="box formcol">
+            <div class="field">
+            <label class="label" for="username-input">Username</label>
+            <div class="control has-icons-left has-icons-right">
+                <input class="input" type="text" id="username" name="username-input" placeholder="Enter Username" required>
+                <span class="icon is-small is-left">
+                    <i class="fa-solid fa-user"></i>
+                </span>
+                <span class="icon is-small is-right">
+                    <i class="fas fa-check"></i>
+                </span>
+            </div>
+            <p class="help">Use your DCU username</p>
+            </div>
+    
+            <div class="field">
+            <label class="label" for="password-input">Password</label>
+            <div class="control has-icons-left has-icons-right">
+                <input class="input" type="password" id="password" name="password-input" placeholder="Enter Password" required>
+                <span class="icon is-small is-left">
+                    <i class="fa-solid fa-lock"></i>
+                </span>
+                <span class="icon is-small is-right">
+                    <i class="fas fa-check"></i>
+                </span>
+                <label class="checkbox">
+                    <input type="checkbox"  onclick="showPassword()">Show Password
+                </label>
+            </div>
+            </div>
+            <div class="field"> 
+                <button id="form-submit" class="button is-teal is-rounded" type="submit">Sign Up!</button>
+            </div>
+            <div class="field"> 
+                <p>Already registered? <a href="/" class="p-link">Login!</a></p>
+            </div>
+        </form>
+
+		<script>
+            //fetch request to submit the input username and password and create an account for the user, display an error message if the username is already taken
+            function formValidator(event){
+                event.preventDefault();
+                let submit_button = document.getElementById("form-submit");
+                submit_button.className = "button is-teal is-rounded is-loading";
+
+                let username = document.getElementById("username").value; 
+                let password = document.getElementById("password").value;
+                fetch("http://127.0.0.1:8000/apiregister/", {
+                method: 'POST',
+                headers: {
+		            'Accept': 'application/json',
+		            'Content-Type': 'application/json'
+                },
+		        body: JSON.stringify({username: username, password: password})
+	            })
+                .then(response=>response.json())
+                .then(data => {
+                    let u_name = data['username'];
+                    if (u_name[0] == "A user with that username already exists.") {
+                        alert(u_name[0]);
+                        submit_button.className = "button is-teal is-rounded";
+                    }
+                    else {
+                        let delForm = document.getElementById("register_form");
+                        let title = document.getElementById("register-title");
+                        let addContent = document.getElementById("register-button");
+                        delForm.remove();
+                        title.innerHTML = "You Have Successfuly Registered";
+                        let htmlString = "<div class=\"inner-header flex\"><h1 class=\"has-text-centered\"><a href=\"/\" class=\"button is-medium is-teal\">Continue</a></h1></div>";
+                        addContent.innerHTML += htmlString;
+                    }
+                })
+            }
+
+            //function to display the user's password when they prompt it
+            function showPassword() {
+                let pw = document.getElementById("password");
+                if (pw.type == "password") {
+                    pw.type = "text";
+                } else {
+                    pw.type = "password";
+                }
+            }
+
+            let myform = document.getElementById("register_form");
+            myform.addEventListener('submit', formValidator);	
+	    </script>
+<%- include('footer') -%>

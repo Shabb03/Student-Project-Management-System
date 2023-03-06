@@ -1,0 +1,92 @@
+<%- include('header_p') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 id="proposal-title" class="is-size-1 has-text-centered">You Currently have no Submitted Proposals</h1>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <table class="table is-fullwidth has-background-grey-lighter">
+        <thead id="tablehead">
+            <tr>
+                <th>TITLE</th>
+                <th>STAFF MEMBER</th>
+                <th>STUDENT</th>
+                <th>COURSE</th>
+                <th>YEAR</th>
+                <th class="has-text-right">VIEW PROPOSAL</th>
+            </tr>
+        </thead>
+        <tbody id="proposallist">
+      
+        </tbody>
+    </table>
+
+    <script>
+        //function to display a table row with a provided proposals details
+        function displayTable(accepted) {
+            let proposal_id = accepted['proposal'];
+            fetch(proposal_id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let id = data['id'];
+                let title = data['title'];
+                let staff = data['staff'];
+                let student_id = data['student'];
+                fetch(student_id, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    let name = data['name'];
+                    let course = data['course'];
+                    let year = data['year'];
+                    let htmlString = "<tr><td>"+ title +"</td><td>"+ staff +"</td><td>"+ name +"</td><td>"+ course +"</td><td>"+ year +"</td><td><div class=\"has-text-right\"><a href=\"/studentproposal?id="+id+"\" target=\"_blank\"\" class=\"button is-teal\">View Proposal</a></div></td></tr>";
+                    let row = document.getElementById("proposallist");
+                    row.innerHTML += htmlString;  
+                })
+            })
+        }
+
+        //function to build a table with a list of all the submitted proposals to the professor
+        function buildTable(){
+            let token = localStorage.getItem("access");
+            let title = document.getElementById("proposal-title");
+            let i = 0
+            fetch("http://127.0.0.1:8000/api/accepted/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    let accepted = element['accepted'];
+                    if (accepted == false) {
+                        i += 1;
+                        title.innerHTML = "Submitted Student Proposals: "+i;
+                        displayTable(element);
+                    }
+                });
+            })
+        }
+        buildTable();
+    </script>
+
+<%- include('footer') -%>

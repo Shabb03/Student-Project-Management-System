@@ -1,0 +1,157 @@
+<%- include('header_a') -%>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 class="is-size-1 has-text-centered">List of Professors and Added Time Slots</h1>
+    </div>
+</div>
+<br>
+<br>
+<div id="search_bar" class="field has-text-centered">
+    <div class="control has-icons-left">
+        <input class="input" type="text" id="search-bar" onkeyup="searchBar()" placeholder="Search for Professor">
+        <span class="icon is-small is-left">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+    </div>
+</div>
+
+<table id="prof_time_slots" class="table is-fullwidth is-hoverable">
+    <thead id="tablehead">
+        <tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th class="has-text-right">NUMBER OF TIME SLOTS</th>
+            <th class="has-text-right">VIEW</th>
+        </tr>
+    </thead>
+    <tbody id="no_added_time">
+  
+    </tbody>
+    <tbody id="added_time">
+  
+    </tbody>
+</table>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+        function displayTable1(profs) {
+            let name = profs['name'];
+            let email = profs['email'];
+
+            let htmlString = "<tr><td>"+ name +"</td><td>"+ email +"</td><td class=\"has-text-right\">"+ 0 +"</td></tr>";
+            let row = document.getElementById("no_added_time");
+            row.innerHTML += htmlString;  
+        }
+
+        function displayTable2(k, v) {
+            let token = localStorage.getItem("access");;
+            
+            fetch(k, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let name = data['name'];
+                let email = data['email'];
+
+                let prof_array = k.split("/");
+                let len = prof_array.length;
+                let url = prof_array[len - 2];
+
+                let htmlString = "<tr><td>"+ name +"</td><td>"+ email +"</td><td class=\"has-text-right\">"+ v +"</td><td class=\"has-text-right\"><a href=\"/professortime?id="+url+"\" class=\"button is-teal is-rounded\" target=\"_blank\">View</a></td></tr>";
+                let row = document.getElementById("added_time");
+                row.innerHTML += htmlString;
+            })  
+        }
+
+        function buildTable1(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/time_professors", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    displayTable1(element);
+                });
+            })
+        }
+
+        function buildTable2(){
+            const times = {};
+
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/timetable/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    let prof_url = element['professor'];
+                        
+                    if (prof_url in times) {
+                        times[prof_url] += 1;
+                    } 
+                    else {
+                        times[prof_url] = 1;
+                    }
+                });
+                for([key, val] of Object.entries(times)) {
+                    displayTable2(key, val);
+                }
+            })
+        }
+
+        function searchBar() {
+            let input = document.getElementById("search-bar");
+            let filter = input.value.toUpperCase();
+            let table1 = document.getElementById("no_added_time");
+            let table2 = document.getElementById("added_time");
+            let tr1 = table1.getElementsByTagName("tr");
+            let tr2 = table2.getElementsByTagName("tr");
+
+            for (i = 0; i < tr1.length; i++) {
+                let name = tr1[i].getElementsByTagName("td")[0];
+                let txtValue = name.textContent || name.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr1[i].style.display = "";
+                } else {
+                    tr1[i].style.display = "none";
+                }
+            }
+
+            for (i = 0; i < tr2.length; i++) {
+                let name = tr2[i].getElementsByTagName("td")[0];
+                let txtValue = name.textContent || name.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr2[i].style.display = "";
+                } else {
+                    tr2[i].style.display = "none";
+                }
+            }
+        }
+
+        buildTable1();
+        buildTable2();
+</script>
+<%- include('footer') -%>

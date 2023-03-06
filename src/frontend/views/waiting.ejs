@@ -1,0 +1,70 @@
+<html>
+	<head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+        <script src="https://kit.fontawesome.com/08e4643268.js" crossorigin="anonymous"></script>
+        <script>
+            //function to redirect the user if they are not a professor waiting for approval from the admin
+			let token = localStorage.getItem("access");
+            if (token == null || token == "undefined") {
+                window.location.href = "/"
+            }
+			else {
+				let user_type = localStorage.getItem("user_type");
+                if (user_type == "New") {
+                    window.location.href = "/profile";
+                }
+                else if (user_type == "Student") {
+                    window.location.href = "/studentpage";
+                }
+                else if (user_type == "Professor") {
+                    window.location.href = "/professorpage";
+                }
+			}
+		</script>
+	</head>
+	<body>
+    <div class="page-container">
+    <div class="content-wrap">
+        <nav id="professornavbar" class="navbar" role="navigation" aria-label="main navigation">
+			<div id="navbarBasicExample" class="navbar-menu">
+			    <div class="navbar-end">
+				    <div class="navbar-item">
+				        <div class="buttons">
+					        <a href="/" id="auth-link" class="button my-button">Logout</a>
+			            </div>
+			        </div>
+		        </div>
+			</div>
+		</nav>
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 class="is-size-1 has-text-centered">Waiting Confirmation From Admin</h1>
+            </div>
+        </div>
+
+        <div class="has-text-centered">
+            <img src="/images/hourglass.gif" alt="Hourglass" style="height: 500px; width: 500px;">
+        </div>
+
+    <script>
+        fetch("http://127.0.0.1:8000/api/users", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+		    'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem("access")
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            let user = data[0];
+            let user_type = user['user_type'];
+            if (user_type == "Professor") {
+                localStorage.setItem("user_type", user_type);
+                window.location.href = "/";
+            }
+        });
+    </script>
+<%- include('footer') -%>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+		<script src="https://kit.fontawesome.com/08e4643268.js" crossorigin="anonymous"></script>
+		<script>
+			//function to redirect the user if they are not a professor
+			let token = localStorage.getItem("access");
+            if (token == null || token == "undefined") {
+                window.location.href = "/"
+            }
+			fetch("http://127.0.0.1:8000/api/admincheck", {
+            method: 'GET',
+            headers: {
+		        'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(response=>response.json())
+            .then(data => {
+                if ('detail' in data) {
+                    let user_type = localStorage.getItem("user_type");
+                    if (user_type == "New") {
+                        window.location.href = "/profile";
+                    }
+    				else if (user_type == "New_Professor") {
+                        window.location.href = "/waiting";
+                    }
+                    else if (user_type == "Student") {
+                        window.location.href = "/studentpage";
+                    }
+                }
+                else {
+                    window.location.href = "/adminpage";
+                }
+            })
+		</script>
+	</head>
+	<body>
+		<nav id="professornavbar" class="navbar" role="navigation" aria-label="main navigation">
+			<div id="navbarBasicExample" class="navbar-menu">
+			    <div class="navbar-start">
+				    <a href="/professorpage" id="professorpage" class="navbar-item"><span class="icon"><i class="fas fa-home"></i></span><span>Homepage</span></a>
+					<a href="/proposalslist" id="proposalslist" class="navbar-item"><span class="icon"><i class="fa-sharp fa-solid fa-file"></i></span><span>Proposals</span></a>
+                    <a href="/profmeeting" id="profmeeting" class="navbar-item"><span class="icon"><i class="fa-sharp fa-solid fa-business-time"></i></span><span>Meeting</span></a>
+                    <a href="/meetingform" id="meetingform" class="navbar-item"><span class="icon"><i class="fa-solid fa-envelope"></i></span><span>Supervision Form</span></a>
+					<a href="/addtimetable" id="addtimetable" class="navbar-item"><span class="icon"><i class="fa-solid fa-calendar"></i></span><span>Timetable Slots</span></a>
+					<a href="/projects" id="projects" class="navbar-item"><span class="icon"><i class="fa-solid fa-bars-progress"></i></span><span>Projects</span></a>
+					<a href="/proftimetable" id="proftimetable" class="navbar-item"><span class="icon"><i class="fa-solid fa-clock"></i></span><span>Demonstration</span></a>
+			    </div>
+		  
+			    <div class="navbar-end">
+				    <div class="navbar-item">
+				        <div class="buttons">
+					        <a href="/" id="auth-link" class="button my-button">Logout</a>
+			            </div>
+			        </div>
+		        </div>
+			</div>
+		</nav>
+		<div class="page-container">
+			<div class="content-wrap">

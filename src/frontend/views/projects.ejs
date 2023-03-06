@@ -1,0 +1,118 @@
+<%- include('header_p') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Accepted Projects</h1>
+        </div>
+    </div>
+
+    <div id="search_bar" class="field has-text-centered">
+        <div class="control has-icons-left">
+            <input class="input" type="text" id="search-bar" onkeyup="searchBar()" placeholder="Search for Projects">
+            <span class="icon is-small is-left">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+        </div>
+    </div>
+
+    <table class="table is-fullwidth has-background-grey-lighter">
+        <thead id="tablehead">
+            <tr>
+                <th>PROJECT</th>
+                <th>STUDENT</th>
+                <th>SUBMITTED</th>
+                <th>ACCEPTED</th>
+                <th>FUNCTIONAL SPECIFICATION</th>
+                <th>DOCUMENTATION</th>
+                <th>MARKED</th>
+                <th class="has-text-right">VIEW PROJECT</th>
+            </tr>
+        </thead>
+        <tbody id="projectlist">
+      
+        </tbody>
+    </table>
+
+    <script>
+        //function to display a table row with the projects provided details and status
+        function displayTable(project) {
+            let id = project['id'];
+            let proposal_id = project['proposal'];
+            let submitted = project['submitted'];
+            let accepted = project['accepted'];
+            let srs = project['srs'];
+            let documentation = project['documentation'];
+            let mark = project['mark'];
+
+            fetch(proposal_id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let title = data['title'];
+                let student_id = data['student'];
+                fetch(student_id, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    let name = data['name'];
+
+                    let htmlString = "<tr><td>"+ title +"</td><td>"+ name +"</td><td>"+ submitted +"</td><td>"+ accepted +"</td><td>"+ srs +"</td><td>"+ documentation +"</td><td>"+ mark +"</td><td><div class=\"has-text-right\"><a href=\"/studentproject?id="+id+"\" target=\"_blank\" class=\"button is-teal\">View Project</a></div></td></tr>";
+                    let row = document.getElementById("projectlist");
+                    row.innerHTML += htmlString;  
+                })
+            })
+        }
+
+        //function to build a table with the list of all projects the professor is supervising
+        function buildTable(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/status/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    displayTable(element);
+                });
+            })
+        }
+
+        //function to take a query from the search bar and display only projects with names similar to the provided query
+        function searchBar() {
+            let input = document.getElementById("search-bar");
+            let filter = input.value.toUpperCase();
+            let table = document.getElementById("projectlist");
+            let tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+
+                let title = tr[i].getElementsByTagName("td")[0];
+                let txtValue = title.textContent || title.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+
+        buildTable();
+    </script>
+
+<%- include('footer') -%>

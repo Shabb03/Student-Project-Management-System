@@ -1,0 +1,205 @@
+<%- include('header_a') -%>
+<div id="scheduler-container">
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 id="timetable-title" class="is-size-1 has-text-centered">Generate Demonstration Schedule</h1>
+        </div>
+    </div>
+
+    <form id="scheduler-form" class="box formcol"> 
+        <div class="field">
+            <label class="label" for="date-input">Enter Starting Date</label>
+            <div class="control">
+                <input class="input" type="date" id="date" name="date-input" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label" for="assessor-input">Enter Number of Assesors per Schedule</label>
+            <div class="control has-icons-left">
+                <input class="input" type="number" id="assessor" name="assessor-input" placeholder="2" required>
+                <span class="icon is-small is-left">
+                    <i class="fa-solid fa-user-tie"></i>
+                </span>
+            </div>
+        </div>
+
+        <div id="scheduler-modal" class="modal">
+            <div id="modal-background" class="modal-background"></div>
+            <div class="modal-content has-background-white py-5 px-5">
+                <div class="header">
+                    <div class="inner-header flex">
+                        <h1 class="is-size-1 has-text-centered">Continue?</h1>
+                        <h1 class="is-size-3 has-text-centered">This Action Cannot be Undone!</h1>
+                    </div>
+                </div>
+              
+                <footer class="modal-card-foot">
+                    <div class="column">
+                        <button id="file_submit" class="button is-teal is-rounded" type="submit">Yes, Generate Timetable</button>
+                    </div>
+                    
+                    <br>
+                    <div class="column">
+                        <p id="modal-text">No, Change Details</p>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+    </form> 
+    <div class="block has-text-centered">
+        <button id="form-scheduler-submit" class="button is-teal is-rounded">Generate Timtable</button>
+    </div>
+
+    <div id="errorMessage">
+
+    </div>
+</div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script>
+        //function to remove the error message pop up if there are not enough timetable slots
+        function deleteErrorMessage() {
+            let messageBox = document.getElementById("articleMessage");
+            messageBox.remove();
+        }
+
+        //function to create a demonstration timetable with the input starting date and number of assessors per demonstration
+        //if there is an error, display an error message box
+        function formValidator(event){
+            event.preventDefault();
+
+            let date = document.getElementById("date").value;
+            let assessor = document.getElementById("assessor").value;
+
+            fetch("http://127.0.0.1:8000/apicreatetimetable/", {
+            method: 'POST',
+            headers: {
+	            'Accept': 'application/json',
+	            'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+            body: JSON.stringify({start_date: date, number_of_assessors: assessor})
+	        })
+            .then(response=>response.json())
+            .then(data=>{
+                if ('Error' in data) {
+                    let error = data['Error'];
+                    let students = data['Students'];
+                    let timeslots = data['Timeslots']
+                    let times = "";
+
+                    let container = document.getElementById("errorMessage");
+                    let modal = document.getElementById("scheduler-modal");
+                    modal.className = "modal";
+                    
+                    timeslots.forEach(timeslot => {
+                        let num = timeslot.slice(18, timeslot.length-1);
+
+                        fetch("http://127.0.0.1:8000/api/timetable/"+num, {
+                        method: 'GET',
+                        headers: {
+            	            'Accept': 'application/json',
+	                        'Content-Type': 'application/json',
+                            "Authorization": 'Bearer '+localStorage.getItem("access")
+                        }
+                        })
+                        .then(response=>response.json())
+                        .then(data=>{
+                            let date = data['date'];
+                            let time = data['time'];
+                            let prof_url = data['professor']
+
+                            fetch(prof_url, {
+                            method: 'GET',
+                            headers: {
+            	                'Accept': 'application/json',
+	                            'Content-Type': 'application/json',
+                                "Authorization": 'Bearer '+localStorage.getItem("access")
+                            }
+                            })
+                            .then(response=>response.json())
+                            .then(data=>{
+                                let name = data['name'];
+
+                                let htmlString = "<p>[Date: " + date + "] [Time: " + time + "] [Professor: "+ name +"</p>";
+                                times += htmlString;
+
+                                container.innerHTML = "<article id=\"articleMessage\" class=\"message is-teal-static\"><div class=\"message-header\"><p>"+error+"</p><button id=\"errorDelete\" class=\"delete\" aria-label=\"delete\" onclick=\"deleteErrorMessage()\"></button></div>" +
+                                          "<div class=\"message-body\">Number of Students left: "+students+"</div>" +
+                                          "<div class=\"message-body\">TimeSlots that are alone: "+times+"</div>" +
+                                          "</article>";
+                            })
+                        })
+                    });
+                }
+                else {
+                    let title = document.getElementById("timetable-title");
+                    let modal = document.getElementById("scheduler-modal");
+                    let submitButton = document.getElementById("form-scheduler-submit");
+                    submitButton.remove()
+                    title.innerHTML = "Generating Timetable, Please Wait"
+                    modal.className = "modal";
+                }
+            });
+            setTimeout(function(){ 
+                window.location.reload();
+            }, 5000);
+        }
+
+        //function to activate a confirmation box for creating a demonstration timetable
+        function activateModal() {
+            let modal = document.getElementById("scheduler-modal");
+            modal.className = "modal is-active";
+
+            const cancelP = document.querySelector('#modal-text');
+            cancelP.addEventListener('click', () => {
+                modal.className = "modal";
+            })
+
+            let myform = document.getElementById("scheduler-form");
+            myform.addEventListener('submit', formValidator);	
+        }
+
+        //function to check if the demonstration timetable has been created for the year and redirect the user if so
+        function checkTimetable() {
+            fetch("http://127.0.0.1:8000/api/demo/", {
+            method: 'GET',
+            headers: {
+	            'Accept': 'application/json',
+	            'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            }
+	        })
+            .then(response=>response.json())
+            .then(data=>{
+                if (data.length > 0) {
+                    let demonstration = data[0];
+                    let start_date = demonstration['start_date'];
+
+                    let d1 = new Date(start_date);
+                    let d2 = new Date();
+                    let start_year = d1.getFullYear();
+                    let current_year = d2.getFullYear();
+                    
+                    if (start_year == current_year) {
+                        window.location.href = "/demonstration"
+                    }
+                }
+            });
+        }
+
+        let form_button = document.getElementById("form-scheduler-submit");
+        form_button.addEventListener('click', activateModal)
+
+        checkTimetable();
+    </script>
+
+<%- include('footer') -%>

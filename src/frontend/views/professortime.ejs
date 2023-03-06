@@ -1,0 +1,108 @@
+<%- include('header_a') -%>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="prof-title" class="is-size-1 has-text-centered">Time Slots</h1>
+    </div>
+</div>
+<br>
+<br>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="prof-time-title" class="is-size-3 has-text-centered">Number of Time Slots: </h1>
+    </div>
+</div>
+<br>
+<br>
+
+<table class="table is-fullwidth is-hoverable">
+    <thead id="tablehead">
+        <tr>
+            <th>DATE</th>
+            <th>TIME</th>
+        </tr>
+    </thead>
+    <tbody id="time-slots">
+  
+    </tbody>
+</table>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+        //function to display a table row with the provided time slot details
+        function displayTable(times) {
+            const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+            let d = times['date'];
+            let t = times['time'];
+
+            let date = new Date(d);
+            let displayDate = date.getDate() + " " + months[date.getMonth()];
+            let newTime = t.split(":");
+            let time = newTime[0] + ":" + newTime[1];
+
+            let htmlString = "<tr><td>"+ displayDate +"</td><td>"+ time +"</td></tr>";
+            let row = document.getElementById("time-slots");
+            row.innerHTML += htmlString;  
+        }
+
+        //function to build a table with a list of all added time slots by the chosen professor in the url
+        function buildTable(){
+            let params = window.location.search;
+            let urlParams = new URLSearchParams(params);
+            let prof_id = urlParams.get("id");
+
+            let prof_title = document.getElementById("prof-title");
+            let prof_time_title = document.getElementById("prof-time-title");
+
+            let token = localStorage.getItem("access");
+
+            fetch("http://127.0.0.1:8000/api/professors/"+prof_id+"/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let name = data['name'];
+                prof_title.innerHTML = name +"'s added Time Slots";
+
+                fetch("http://127.0.0.1:8000/api/timetable", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+token
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    let count = 0
+
+                    data.forEach(element => {
+                        let professor = element['professor'];
+
+                        let prof_array = professor.split("/");
+                        let len = prof_array.length;
+                        let prof_url = prof_array[len - 2];
+
+                        if (prof_url == prof_id) {
+                            displayTable(element);
+                            count += 1;
+                        }
+                    });
+                    prof_time_title.innerHTML += count;
+                })
+            })
+        }
+
+        buildTable();
+</script>
+<%- include('footer') -%>

@@ -1,0 +1,141 @@
+<%- include('header_p') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 id="supervision-form-title" class="is-size-1 has-text-centered">Project Supervision Form</h1>
+        </div>
+    </div>
+
+    <form id="supervision-form" class="box formcol"> 
+        <div class="field">
+            <label class="label" for="comments-input">Comments</label>
+            <div class="control">
+                <textarea class="textarea" id="comments" name="comments-input" rows="6" required></textarea>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="progress-input">Progress</label>
+            <div class="control">
+                <input class="input" type="text" id="progress" name="progress-input" required>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="students">Student</label>
+            <div class="control">
+                <div class="select">
+                    <select id="students" class="drop-down" name="students">
+                        <option value="None">Select Student</option>
+                    </select>
+                </div>
+            </div>
+        </div> 
+        <button class="button is-teal is-rounded" type="submit">Email Project Supervision</button>
+    </form> 
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script>
+        //function to reload the page
+        function reloadPage() {
+            window.location.reload();
+        }
+
+        //fetch request to email the student about the meeting as a project supervision form
+        function formValidator(event){
+            event.preventDefault();
+            let student = document.getElementById("students").value;
+            let comments = document.getElementById("comments").value;
+            let progress = document.getElementById("progress").value;
+
+            if (student == "None") {
+                alert("No Studen Chosen")
+            }
+            else {
+                fetch("http://127.0.0.1:8000/api/students/" + student, {
+                method: 'GET',
+                headers: {
+		            'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                    "Authorization": 'Bearer '+localStorage.getItem("access")
+                }
+	            })
+                .then(response=>response.json())
+                .then(data=>{
+                    let name = data['name'];
+                    let email = data['email'];
+
+                    fetch("http://127.0.0.1:8000/apimeetingform/", {
+                    method: 'POST',
+                    headers: {
+		                'Accept': 'application/json',
+		                'Content-Type': 'application/json',
+                        "Authorization": 'Bearer '+localStorage.getItem("access")
+                    },
+	                body: JSON.stringify({email: email, students: name, comments: comments, progress: progress})
+	                })
+                    .then(response=>response.json())
+                    .then(data=>{
+                        let title = document.getElementById("supervision-form-title");
+                        let delForm = document.getElementById("supervision-form");
+                        delForm.remove()
+                        title.innerHTML = "Project Supervision Form Emailed to " + name; 
+                        setInterval(reloadPage, 1000);
+                    });
+                })
+            }
+        }
+
+        //function to display a list of students being supervisied onto the form to choose which student to send the meeting proposal to
+        function displayOptions(id){
+            let student_id = id['student'];
+
+            let student_number = student_id.split("/");
+            let arraySize = student_number.length;
+            let student_num = student_number[arraySize-2];
+
+            fetch(student_id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let name = data['name'];
+                let htmlString = "<option value="+student_num+">"+name+"</option>";
+                let options = document.getElementById("students");
+                options.innerHTML += htmlString;
+            })
+        }
+
+        //function to display get a list of all students the professor is supervising
+        function buildForm() {
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/accepted/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    displayOptions(element);
+                });
+            })
+        }
+
+        let myform = document.getElementById("supervision-form");
+        myform.addEventListener('submit', formValidator);	
+        buildForm();
+    </script>
+
+<%- include('footer') -%>

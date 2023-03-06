@@ -1,0 +1,278 @@
+<%- include('header_p') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 id="student-proposal-title" class="is-size-1 has-text-centered">View Student Proposal</h1>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <div id="studentproposal-container">
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Title</p>
+            <div class="content">
+              <p id="p-title"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Student Name</p>
+            <div class="content">
+              <p id="p-name"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Student Email</p>
+            <div class="content">
+              <p id="p-email"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Course</p>
+            <div class="content">
+              <p id="p-course"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Year</p>
+            <div class="content">
+              <p id="p-year"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Indicated Staff Member</p>
+            <div class="content">
+              <p id="p-staff"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Introduction</p>
+            <div class="content">
+              <p id="p-introduction"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Outline</p>
+            <div class="content">
+              <p id="p-outline"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Background</p>
+            <div class="content">
+              <p id="p-background"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Goals</p>
+            <div class="content">
+              <p id="p-goals"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Tools</p>
+            <div class="content">
+              <p id="p-tools"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div id="profile-container" class="customcontainer">
+    <div class="custompage">
+
+    <form id="accept-form" class="box formcol"> 
+        <div class="has-text-centered">
+            <button class="button is-teal is-rounded" type="submit">Accept Proposal</button>
+        </div>
+    </form> 
+
+    </div>
+    <div class="custompage">
+
+    <form id="reject-form" class="box formcol"> 
+        <div class="field">
+            <label class="label" for="message-input">Reason of Rejection</label>
+            <div class="control">
+                <input class="input" type="text" id="message" name="message-input" placeholder="Message">
+            </div>
+        </div>
+        <div class="has-text-centered">
+            <button class="button is-teal is-rounded" type="submit">Reject Proposal</button>
+        </div>
+    </form> 
+    </div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    </div>
+
+    <script>
+        //function to reject a student proposal, email the student with the provided message and change the page display
+        function rejectProposal(event){
+            event.preventDefault();
+            let params = window.location.search;
+            let urlParams = new URLSearchParams(params);
+            let proposal_id = urlParams.get("id");
+            let message = document.getElementById("message").value; 
+            fetch("http://127.0.0.1:8000/apirejectproposal/", {
+            method: 'POST',
+            headers: {
+		            'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            },
+		        body: JSON.stringify({proposal: proposal_id, message: message})
+	          })
+            .then(response=>response.json())
+            .then(data=>{
+                let title = document.getElementById("student-proposal-title");
+                title.innerHTML = "Proposal Rejected";
+                let content = document.getElementById("studentproposal-container");
+                content.remove();
+            });
+        }
+
+        //function to accept a student proposal and change the page display
+        function acceptProposal(){
+            event.preventDefault();
+            let params = window.location.search;
+            console.log(params);
+            let urlParams = new URLSearchParams(params);
+            console.log(urlParams);
+            let proposal_id = urlParams.get("id");
+            console.log(proposal_id);
+            fetch("http://127.0.0.1:8000/apiacceptproposal/", {
+            method: 'POST',
+            headers: {
+		            'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            },
+		        body: JSON.stringify({proposal: proposal_id})
+	          })
+            .then(response=>response.json())
+            .then(data=>{
+                let title = document.getElementById("student-proposal-title");
+                title.innerHTML = "Proposal Accepted";
+                let content = document.getElementById("studentproposal-container");
+                content.remove();
+            });
+        }
+
+        //function to display the student's proposal details
+        function showProposal(){
+	          let params = window.location.search;
+            let urlParams = new URLSearchParams(params);
+            let proposal_id = urlParams.get("id");
+ 
+            if(proposal_id != null && typeof(proposal_id)!= 'undefined'){
+                fetch('http://127.0.0.1:8000/api/proposals/'+proposal_id, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                }
+                })
+                .then(resp => resp.json())
+                .then(data => {
+                    if('detail' in data) {
+                        alert("This Proposal Form does not exist!");
+                    }
+                    else {
+                        let title = data['title'];
+                        let staff = data['staff'];
+                        let introduction = data['introduction'];
+                        let outline = data['outline'];
+                        let background = data['background'];
+                        let goals = data['goals'];
+                        let tools = data['tools'];
+                        let student_id = data['student'];
+                        fetch(student_id, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer '+localStorage.getItem("access")
+                        }
+                        })
+                        .then(resp=>resp.json())
+                        .then(data=>{
+                            console.log(data);
+                            let name = data['name'];
+                            let email = data['email'];
+                            let course = data['course'];
+                            let year = data['year'];
+
+                            let p_title = document.getElementById("p-title").innerHTML = title;
+                            let p_name = document.getElementById("p-name").innerHTML = name;
+                            let p_email = document.getElementById("p-email").innerHTML = email;
+                            let p_course = document.getElementById("p-course").innerHTML = course;
+                            let p_year = document.getElementById("p-year").innerHTML = year;
+                            let p_staff = document.getElementById("p-staff").innerHTML = staff;
+                            let p_introduction = document.getElementById("p-introduction").innerHTML = introduction;
+                            let p_outline = document.getElementById("p-outline").innerHTML = outline;
+                            let p_background = document.getElementById("p-background").innerHTML = background;
+                            let p_goals = document.getElementById("p-goals").innerHTML = goals;
+                            let p_tools = document.getElementById("p-tools").innerHTML = tools;
+                        })
+                    }
+                });
+            }
+	      }
+       
+        let acceptform = document.getElementById('accept-form');
+        acceptform.addEventListener("submit", acceptProposal);
+        let rejectform = document.getElementById("reject-form");
+        rejectform.addEventListener('submit', rejectProposal);	
+        showProposal();
+    </script>
+
+<%- include('footer') -%>

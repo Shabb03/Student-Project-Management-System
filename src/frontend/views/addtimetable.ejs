@@ -1,0 +1,162 @@
+<%- include('header_p') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Your Timetable for Demonstration</h1>
+        </div>
+    </div>
+
+    <form id="addtime-form" class="box formcol"> 
+        <div class="field">
+            <label class="label" for="date-input">Date</label>
+            <div class="control has-icons-left">
+            <input class="input" type="date" id="date" name="date-input" required>
+              <span class="icon is-small is-left">
+                <i class="fa-solid fa-calendar"></i>
+              </span>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label" for="times">Time</label>
+            <div class="control has-icons-left choice-is-expanded">
+                <div class="select">
+                    <select id="times" class="drop-down" name="times">
+                        <option value="09:00">09:00-10:00</option>
+                        <option value="10:00">10:00-11:00</option>
+                        <option value="11:00">11:00-12:00</option>
+                        <option value="12:00">12:00-13:00</option>
+                        <option value="14:00">14:00-15:00</option>
+                        <option value="15:00">15:00-16:00</option>
+                        <option value="16:00">16:00-16:00</option>
+                        <option value="17:00">17:00-18:00</option>
+                    </select>
+                </div>
+                <div class="icon is-small is-left">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+            </div>
+        </div>   
+        <button id="add-time-submit" class="button is-teal is-rounded" type="submit">Add Time Slot</button>
+        <br>
+        <br>
+        <p id="form-text"></p>
+    </form> 
+    
+    <br>
+    <br>
+
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Your Added Time Slots</h1>
+        </div>
+    </div>
+
+    <table class="table is-fullwidth has-background-grey-lighter">
+        <thead id="tablehead">
+            <tr>
+                <th>DATE</th>
+                <th>TIME</th>
+                <th class="has-text-right">REMOVE</th>
+            </tr>
+        </thead>
+        <tbody id="timelist">
+      
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script>
+        //fetch request to submit the added time slot date and time and store them into the database
+        function formValidator(event){
+            event.preventDefault();
+            let submit_button = document.getElementById("add-time-submit");
+            submit_button.className = "button is-teal is-rounded is-loading";
+
+            let date = document.getElementById("date").value;
+            let time = document.getElementById("times").value; 
+
+            fetch("http://127.0.0.1:8000/apiaddtime/", {
+            method: 'POST',
+            headers: {
+		        'Accept': 'application/json',
+		        'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+	        body: JSON.stringify({date: date, time: time})
+	        })
+            .then(response=>response.json())
+            .then(data=>{
+                if ('Error' in data) {
+                    let p = document.getElementById("form-text");
+                    p.innerHTML = "ERROR: " + data['Error'];
+                    submit_button.className = "button is-teal is-rounded";
+                }
+                else {
+                    window.location.reload();
+                }
+            });
+        }
+
+        //fetch request to remove an added time slot from the database
+        function removeTime(id) {
+            fetch('http://127.0.0.1:8000/apiremovetime/', {
+            'method':'POST',
+            'headers':{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+            'body': JSON.stringify({id:id})
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                window.location.reload();
+            })
+        }
+
+        //function to display a table row with the provided time slot
+        function displayTable(times) {
+            let id = times['id'];
+            let date = times['date'];
+            let time = times['time'];
+            const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+            let d = new Date(date);
+            let displayDate = d.getDate() + " " + months[d.getMonth()];
+
+            let htmlString = "<tr><td>"+ displayDate +"</td><td>"+ time +"</td><td><div class=\"has-text-right\"><button class=\"button is-teal\" onclick=\"removeTime("+id+")\">Remove</button></div></td></tr>";
+            let row = document.getElementById("timelist");
+            row.innerHTML += htmlString;  
+        }
+
+        //function to fetch the list of added time slots and build a table
+        function buildTable(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/timetable/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    displayTable(element);
+                });
+            })
+        }
+
+        let myform = document.getElementById("addtime-form");
+        myform.addEventListener('submit', formValidator);	
+        buildTable();
+    </script>
+
+<%- include('footer') -%>

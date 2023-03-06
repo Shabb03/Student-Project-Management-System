@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title><%= title %></title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+		<script src="https://kit.fontawesome.com/08e4643268.js" crossorigin="anonymous"></script>
+		<script>
+			//function to redirect the user if they are not an admin
+            fetch("http://127.0.0.1:8000/api/admincheck", {
+            method: 'GET',
+            headers: {
+		        'Accept': 'application/json',
+	            'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(response=>response.json())
+            .then(data => {
+                if ('detail' in data) {
+                    window.location.href = "/";
+                }
+            })
+		</script>
+	</head>
+	<body>
+		<nav id="professornavbar" class="navbar" role="navigation" aria-label="main navigation">
+			<div id="navbarBasicExample" class="navbar-menu">
+			    <div class="navbar-start">
+				    <a href="/adminpage" id="adminpage" class="navbar-item"><span class="icon"><i class="fas fa-home"></i></span><span>Homepage</span></a>
+					<a href="/deadline" id="deadline" class="navbar-item"><span class="icon"><i class="fa-solid fa-hourglass-start"></i></span><span>Set Deadlines</span></a>
+                    <a href="/newprofessors" id="newprofessors" class="navbar-item"><span class="icon"><i class="fa-solid fa-person-walking-arrow-right"></i></span><span>New Professors</span></a>
+                    <a href="/studentslist" id="studentslist" class="navbar-item"><span class="icon"><i class="fa-solid fa-graduation-cap"></i></span><span>Students</span></a>
+                    <a href="/professorslist" id="professorslist" class="navbar-item"><span class="icon"><i class="fa-solid fa-user-tie"></i></span><span>Professors</span></a>
+                    <a href="/professortimelist" id="professortimelist" class="navbar-item"><span class="icon"><i class="fa-solid fa-clock"></i></span><span>Time Slots</span></a>
+					<a href="/venues" id="venues" class="navbar-item"><span class="icon"><i class="fa-solid fa-location-dot"></i></span><span>Demonstration-Venues</span></a>
+                    <a href="/timetable" id="timetable" class="navbar-item"><span class="icon"><i class="fa-solid fa-calendar"></i></span><span>Scheduler</span></a>
+			    </div>
+		  
+			    <div class="navbar-end">
+				    <div class="navbar-item">
+				        <div class="buttons">
+							<a href="/reset" id="reset" class="button is-teal"><span>Reset</span></a>
+					        <a href="/" id="auth-link" class="button my-button">Logout</a>
+			            </div>
+			        </div>
+		        </div>
+			</div>
+		</nav>
+		<div class="page-container">
+			<div class="content-wrap">

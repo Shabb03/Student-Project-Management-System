@@ -1,0 +1,809 @@
+<%- include('header_p') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">View Student Project</h1>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Title</p>
+            <div class="content">
+              <p id="p-title"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Student Name</p>
+            <div class="content">
+              <p id="p-name"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Student Email</p>
+            <div class="content">
+              <p id="p-email"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Course</p>
+            <div class="content">
+              <p id="p-course"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Year</p>
+            <div class="content">
+              <p id="p-year"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Demonstration Time</p>
+            <div class="content">
+              <p id="p-demonstration">Timetable not Created Yet</p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Introduction</p>
+            <div class="content">
+              <p id="p-introduction"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Outline</p>
+            <div class="content">
+              <p id="p-outline"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Background</p>
+            <div class="content">
+              <p id="p-background"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Goals</p>
+            <div class="content">
+              <p id="p-goals"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <div class="tile is-ancestor">
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Tools</p>
+            <div class="content">
+              <p id="p-tools"></p>
+            </div>
+          </article>
+        </div>
+    </div>
+
+    <br>
+    <div class="header">
+      <div class="inner-header flex">
+          <h1 id="file-section-title" class="is-size-1 has-text-centered">Files</h1>
+      </div>
+    </div>
+    <br>
+
+    <div id="file-section">
+    <div class="box">
+    <div class="block has-text-centered">
+        <a id="srs-link" href="/" target="_blank" class="button is-teal">Functional Specification</a>
+    </div>
+    <div class="block has-text-centered">
+      <a id="documentation-link" href="/" target="_blank" class="button is-teal">Documentation</a>
+    </div>
+    </div>
+    </div>
+
+    <br>
+    <div class="header">
+      <div class="inner-header flex">
+          <h1 class="is-size-1 has-text-centered">Project Mark</h1>
+      </div>
+    </div>
+    <br>
+
+    <div id="marked-form">
+      <div class="tile is-ancestor">
+        <div class="tile is-parent is-10">
+          <article class="tile is-child box">
+            <p class="title">Title</p>
+            <div class="content">
+              <p id="marked-title"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Total Marks</p>
+            <div class="content">
+              <p id="total-marks"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent is-10">
+          <article class="tile is-child box">
+            <p class="title">Functional Specification Report</p>
+            <div class="content">
+              <p id="marked-srs-report"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Mark</p>
+            <div class="content">
+              <p id="marked-srs-mark"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent is-10">
+          <article class="tile is-child box">
+            <p class="title">Code Design Report</p>
+            <div class="content">
+              <p id="marked-design-report"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Mark</p>
+            <div class="content">
+              <p id="marked-design-mark"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent is-10">
+          <article class="tile is-child box">
+            <p class="title">Code Implementation Report</p>
+            <div class="content">
+              <p id="marked-implementation-report"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Mark</p>
+            <div class="content">
+              <p id="marked-implementation-mark"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent is-10">
+          <article class="tile is-child box">
+            <p class="title">Testing Report</p>
+            <div class="content">
+              <p id="marked-testing-report"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Mark</p>
+            <div class="content">
+              <p id="marked-testing-mark"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent is-10">
+          <article class="tile is-child box">
+            <p class="title">Documentation Report</p>
+            <div class="content">
+              <p id="marked-documentation-report"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Mark</p>
+            <div class="content">
+              <p id="marked-documentation-mark"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent is-10">
+          <article class="tile is-child box">
+            <p class="title">Demonstration Report</p>
+            <div class="content">
+              <p id="marked-demonstration-report"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Mark</p>
+            <div class="content">
+              <p id="marked-demonstration-mark"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent is-10">
+          <article class="tile is-child box">
+            <p class="title">Video Report</p>
+            <div class="content">
+              <p id="marked-video-report"></p>
+            </div>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child box">
+            <p class="title">Mark</p>
+            <div class="content">
+              <p id="marked-video-mark"></p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <form id="mark-form" class="box proposalformcol"> 
+        <div class="field">
+            <label class="label" for="title-input">Title</label>
+            <div class="control">
+                <input class="input" type="text" id="mark-title" name="title-input" placeholder="Title" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label" for="srs-input">Functional Specification</label>
+        </div>
+        <div class="field">
+            <div class="columns">
+                <div class="column">
+                    <div class="control is-expanded">
+                        <!--<input class="input" type="text" id="srs-report" name="srs-input" placeholder="Report">-->
+                        <textarea class="textarea" id="srs-report" name="srs-input" rows="5" placeholder="Report" required></textarea>
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <div class="control has-icons-left">
+                        <input class="input" type="number" id="srs-mark" name="srs-input" placeholder="Mark" required>
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-marker"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="design-input">Code Design</label>
+        </div>
+        <div class="field">
+          <div class="columns">
+              <div class="column">
+                  <div class="control is-expanded">
+                      <!--<input class="input" type="text" id="design-report" name="design-input" placeholder="Report">-->
+                      <textarea class="textarea" id="design-report" name="design-input" rows="5" placeholder="Report" required></textarea>
+                  </div>
+              </div>
+              <div class="column is-2">
+                  <div class="control has-icons-left">
+                      <input class="input" type="number" id="design-mark" name="design-input" placeholder="Mark" required>
+                      <span class="icon is-small is-left">
+                          <i class="fa-solid fa-marker"></i>
+                      </span>
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="implementation-input">Code Implementation</label>
+        </div>
+        <div class="field">
+          <div class="columns">
+            <div class="column">
+                <div class="control is-expanded">
+                    <!--<input class="input" type="text" id="implementation-report" name="implementation-input" placeholder="Report">-->
+                    <textarea class="textarea" id="implementation-report" name="implementation-input" rows="5" placeholder="Report" required></textarea>
+                </div>
+            </div>
+            <div class="column is-2">
+                <div class="control has-icons-left">
+                    <input class="input" type="number" id="implementation-mark" name="implementation-input" placeholder="Mark">
+                    <span class="icon is-small is-left">
+                      <i class="fa-solid fa-marker"></i>
+                  </span>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="testing-input">Code Testing</label>
+        </div>
+        <div class="field">
+          <div class="columns">
+            <div class="column">
+              <div class="control is-expanded">
+                  <!--<input class="input" type="text" id="testing-report" name="testing-input" placeholder="Report">-->
+                  <textarea class="textarea" id="testing-report" name="testing-input" rows="5" placeholder="Report" required></textarea>
+              </div>
+            </div>
+            <div class="column is-2">
+              <div class="control has-icons-left">
+                  <input class="input" type="number" id="testing-mark" name="testing-input" placeholder="Mark">
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-marker"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="documentation-input">Documentation</label>
+        </div>
+        <div class="field">
+          <div class="columns">
+              <div class="column">
+                  <div class="control is-expanded">
+                      <!--<input class="input" type="text" id="documentation-report" name="documentation-input" placeholder="Report">-->
+                      <textarea class="textarea" id="documentation-report" name="documentation-input" rows="5" placeholder="Report" required></textarea>
+                  </div>
+              </div>
+              <div class="column is-2">
+                  <div class="control has-icons-left">
+                      <input class="input" type="number" id="documentation-mark" name="documentation-input" placeholder="Mark">
+                      <span class="icon is-small is-left">
+                        <i class="fa-solid fa-marker"></i>
+                    </span>
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="demonstration-input">Demonstration</label>
+        </div>
+        <div class="field">
+          <div class="columns">
+            <div class="column">
+                <div class="control is-expanded">
+                    <!--<input class="input" type="text" id="demonstration-report" name="demonstration-input" placeholder="Report">-->
+                    <textarea class="textarea" id="demonstration-report" name="demonstration-input" rows="5" placeholder="Report" required></textarea>
+                </div>
+            </div>
+            <div class="column is-2">
+                <div class="control has-icons-left">
+                    <input class="input" type="number" id="demonstration-mark" name="demonstration-input" placeholder="Mark">
+                    <span class="icon is-small is-left">
+                      <i class="fa-solid fa-marker"></i>
+                  </span>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="video-input">Video</label>
+        </div>
+        <div class="field">
+          <div class="columns">
+            <div class="column">
+              <div class="control is-expanded">
+                  <!--<input class="input" type="text" id="video-report" name="video-input" placeholder="Report">-->
+                  <textarea class="textarea" id="video-report" name="video-input" rows="5" placeholder="Report" required></textarea>
+              </div>
+            </div>
+            <div class="column is-2">
+              <div class="control has-icons-left">
+                  <input class="input" type="number" id="video-mark" name="video-input" placeholder="Mark">
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-marker"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="mark-modal" class="modal">
+          <div id="modal-background" class="modal-background"></div>
+          <div class="modal-content has-background-white py-5 px-5">
+              <div class="header">
+                  <div class="inner-header flex">
+                      <h1 class="is-size-1 has-text-centered">Are you ready to submit?</h1>
+                      <h1 class="is-size-3 has-text-centered">This Action Cannot be Undone!</h1>
+                  </div>
+              </div>
+            
+              <footer class="modal-card-foot">
+                  <div class="column">
+                      <button id="mark_submit" class="button is-teal is-rounded" type="submit">Yes, Submit Grade</button>
+                  </div>
+                  
+                  <br>
+                  <div class="column">
+                      <p id="modal-text">No, Edit Grade</p>
+                  </div>
+              </footer>
+          </div>
+        </div>
+    </form> 
+
+    <div class="block has-text-centered">
+      <button id="mark-file-submit" class="button is-teal is-rounded">Submit Mark</button>
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script>
+        function formValidator(event){
+            event.preventDefault();
+            let params = window.location.search;
+            let urlParams = new URLSearchParams(params);
+            let project_id = urlParams.get("id");
+
+            fetch('http://127.0.0.1:8000/api/status/'+project_id, {
+            method: 'GET',
+            headers: {
+		            'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            }
+	          })
+            .then(response=>response.json())
+            .then(data=>{
+                let student_id = data['student'];
+
+                fetch(student_id, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                }
+                })
+                .then(resp => resp.json())
+                .then(data => {
+                    let email = data['email'];
+                    let student_number = student_id.split("/");
+                    let arraySize = student_number.length;
+                    let student_num = student_number[arraySize-2];
+
+                    let title = document.getElementById("mark-title").value;
+
+                    let srs_report = document.getElementById("srs-report").value;
+                    let srs_mark = document.getElementById("srs-mark").value;
+                    let design_report = document.getElementById("design-report").value;
+                    let design_mark = document.getElementById("design-mark").value;
+                    let implementation_report = document.getElementById("implementation-report").value;
+                    let implementation_mark = document.getElementById("implementation-mark").value;
+                    let testing_report = document.getElementById("testing-report").value;
+                    let testing_mark = document.getElementById("testing-mark").value;
+                    let documentation_report = document.getElementById("documentation-report").value;
+                    let documentation_mark = document.getElementById("documentation-mark").value;
+                    let demonstration_report = document.getElementById("demonstration-report").value;
+                    let demonstration_mark = document.getElementById("demonstration-mark").value;
+                    let video_report = document.getElementById("video-report").value;
+                    let video_mark = document.getElementById("video-mark").value;
+
+                    fetch('http://127.0.0.1:8000/apimark/', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer '+localStorage.getItem("access")
+                    },
+                    body: JSON.stringify({student: student_num, title: title, srs_report: srs_report, srs_mark: srs_mark, design_report: design_report, design_mark: design_mark, implementation_report: implementation_report, implementation_mark: implementation_mark, testing_report: testing_report, testing_mark: testing_mark, documentation_report: documentation_report, documentation_mark: documentation_mark, demonstration_report: demonstration_report, demonstration_mark: demonstration_mark, video_report: video_report, video_mark: video_mark})
+                    })
+                    .then(resp => resp.json())
+                    .then(data => {
+                        window.location.reload();
+                    });
+                })
+            });
+        }
+
+        function showMark(student_url) {
+            let delForm = document.getElementById("mark-form");
+            let delButton = document.getElementById("mark-file-submit")
+            delForm.remove();
+            delButton.remove();
+            fetch("http://127.0.0.1:8000/api/marking/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                data.forEach(element=>{
+                  let student = element['student'];
+                  if (student_url == student) {
+                    let title = element['title'];
+                    let srs_report = element['srs_report'];
+                    let srs_mark = element['srs_mark'];
+                    let design_report = element['design_report'];
+                    let design_mark = element['design_mark'];
+                    let implementation_report = element['implementation_report'];
+                    let implementation_mark = element['implementation_mark'];
+                    let testing_report = element['testing_report'];
+                    let testing_mark = element['testing_mark'];
+                    let documentation_report = element['documentation_report'];
+                    let documentation_mark = element['documentation_mark'];
+                    let demonstration_report = element['demonstration_report'];
+                    let demonstration_mark = element['demonstration_mark'];
+                    let video_report = element['video_report'];
+                    let video_mark = element['video_mark'];
+                    let total_marks = element['total_marks'];
+
+                    document.getElementById("marked-title").innerHTML = title;
+                    document.getElementById("total-marks").innerHTML = total_marks;
+                    document.getElementById("marked-srs-report").innerHTML = srs_report;
+                    document.getElementById("marked-srs-mark").innerHTML = srs_mark;
+                    document.getElementById("marked-design-report").innerHTML = design_report;
+                    document.getElementById("marked-design-mark").innerHTML = design_mark;
+                    document.getElementById("marked-implementation-report").innerHTML = implementation_report;
+                    document.getElementById("marked-implementation-mark").innerHTML = implementation_mark;
+                    document.getElementById("marked-testing-report").innerHTML = testing_report;
+                    document.getElementById("marked-testing-mark").innerHTML = testing_mark;
+                    document.getElementById("marked-documentation-report").innerHTML = documentation_report;
+                    document.getElementById("marked-documentation-mark").innerHTML = documentation_mark;
+                    document.getElementById("marked-demonstration-report").innerHTML = demonstration_report;
+                    document.getElementById("marked-demonstration-mark").innerHTML = demonstration_mark;
+                    document.getElementById("marked-video-report").innerHTML = video_report;
+                    document.getElementById("marked-video-mark").innerHTML = video_mark;
+                  }
+                })
+            })
+        }
+        
+        function showProject(){
+	          let params = window.location.search;
+            let urlParams = new URLSearchParams(params);
+            let project_id = urlParams.get("id");
+ 
+            if(project_id != null && typeof(project_id)!= 'undefined'){
+                fetch('http://127.0.0.1:8000/api/status/'+project_id, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                }
+                })
+                .then(resp => resp.json())
+                .then(data => {
+                    if('detail' in data) {
+                        window.location.href = "/professorpage";
+                    }
+                    else {
+                        let student_id = data['student'];
+                        let proposal_id = data['proposal'];
+                        let files_id = data['files'];
+                        let submitted = data['submitted'];
+                        let accepted = data['accepted'];
+                        let srs = data['srs'];
+                        let documentation = data['documentation'];
+                        let mark = data['mark'];
+
+                        fetch(proposal_id, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer '+localStorage.getItem("access")
+                        }
+                        })
+                        .then(resp=>resp.json())
+                        .then(data=>{
+                            let prop_id = data['id']; 
+                            let title = data['title'];
+                            let introduction = data['introduction'];
+                            let outline = data['outline'];
+                            let background = data['background'];
+                            let goals = data['goals'];
+                            let tools = data['tools'];
+
+                            if (mark == true) {
+                                showMark(student_id);
+                            }
+                            else {
+                                let marked_form = document.getElementById("marked-form");
+                                marked_form.remove();
+                            }
+
+                            fetch(student_id, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer '+localStorage.getItem("access")
+                            }
+                            })
+                            .then(resp=>resp.json())
+                            .then(data=>{
+                                let name = data['name'];
+                                let email = data['email'];
+                                let course = data['course'];
+                                let year = data['year'];
+
+                                if (files_id == null) {
+                                    document.getElementById("file-section-title").innerHTML = "No Files Submitted";
+                                    document.getElementById("file-section").remove();
+                                    let p_title = document.getElementById("p-title").innerHTML = title;
+                                    let p_name = document.getElementById("p-name").innerHTML = name;
+                                    let p_email = document.getElementById("p-email").innerHTML = email;
+                                    let p_course = document.getElementById("p-course").innerHTML = course;
+                                    let p_year = document.getElementById("p-year").innerHTML = year;
+                                    let p_demonstration = document.getElementById("p-demonstration").innerHTML = "YET TO ADD FUNCTION";
+                                    let p_introduction = document.getElementById("p-introduction").innerHTML = introduction;
+                                    let p_outline = document.getElementById("p-outline").innerHTML = outline;
+                                    let p_background = document.getElementById("p-background").innerHTML = background;
+                                    let p_goals = document.getElementById("p-goals").innerHTML = goals;
+                                    let p_tools = document.getElementById("p-tools").innerHTML = tools;
+                                }
+                                else {
+                                    fetch(files_id, {
+                                    method: 'GET',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Content-Type': 'application/json',
+                                        'Authorization': 'Bearer '+localStorage.getItem("access")
+                                    }
+                                    })
+                                    .then(resp=>resp.json())
+                                    .then(data=>{
+                                        let srs_file = data['srs'];
+                                        let documentation_file = data['documentation'];
+
+                                        document.getElementById("p-title").innerHTML = title;
+                                        document.getElementById("p-name").innerHTML = name;
+                                        document.getElementById("p-email").innerHTML = email;
+                                        document.getElementById("p-course").innerHTML = course;
+                                        document.getElementById("p-year").innerHTML = year;
+                                        document.getElementById("p-introduction").innerHTML = introduction;
+                                        document.getElementById("p-outline").innerHTML = outline;
+                                        document.getElementById("p-background").innerHTML = background;
+                                        document.getElementById("p-goals").innerHTML = goals;
+                                        document.getElementById("p-tools").innerHTML = tools;
+
+                                        if (srs_file == null) {
+                                            document.getElementById("srs-link").remove();
+                                        }
+                                        else {
+                                            document.getElementById("srs-link").href = srs_file;
+                                        }
+                                        if (documentation_file == null) {
+                                            document.getElementById("documentation-link").remove();
+                                        }
+                                        else {
+                                            document.getElementById("documentation-link").href = documentation_file;
+                                        }
+
+                                        fetch("http://127.0.0.1:8000/api/demonstration/", {
+                                        method: 'GET',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json',
+                                            'Authorization': 'Bearer '+localStorage.getItem("access")
+                                        }
+                                        })
+                                        .then(resp=>resp.json())
+                                        .then(data=>{
+                                            if (data.length == 0) {
+
+                                            }
+                                            else {
+                                                data.forEach(element=>{
+                                                    let demo_student = element['student'];
+                                                    if (demo_student == student_id) {
+                                                        let d = demo['date'];
+                                                        let t = demo['time'];
+                                                        let venue = demo['venue'];
+
+                                                        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+                                                        let date = new Date(d);
+                                                        let displayDate = date.getDate() + " " + months[date.getMonth()];
+                                                        let newTime = t.split(":");
+                                                        let time = newTime[0] + ":" + newTime[1];
+
+                                                        document.getElementById("p-demonstration").innerHTML = time + " " + displayDate + " " + venue;
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    })
+                                }
+                            })
+                        })
+                    }
+                });
+            }
+	      }
+
+        function activateModal() {
+            let i = 0;
+            let modal = document.getElementById("mark-modal");
+            modal.className = "modal is-active";
+
+            const cancelP = document.querySelector('#modal-text');
+            cancelP.addEventListener('click', () => {
+                console.log("You canceled!");
+                modal.className = "modal";
+            })
+
+            let myform = document.getElementById("mark-form");
+            myform.addEventListener('submit', formValidator);	
+        }
+
+        let mark_button = document.getElementById("mark-file-submit");
+        mark_button.addEventListener('click', activateModal)
+
+        showProject();
+    </script>
+
+<%- include('footer') -%>

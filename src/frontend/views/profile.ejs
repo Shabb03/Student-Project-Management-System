@@ -1,0 +1,279 @@
+<html>
+	<head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+        <script src="https://kit.fontawesome.com/08e4643268.js" crossorigin="anonymous"></script>
+        <script>
+            //function to redirect the user if they are already logged in
+			let token = localStorage.getItem("access");
+            if (token == null || token == "undefined") {
+                window.location.href = "/"
+            }
+            fetch("http://127.0.0.1:8000/api/admincheck", {
+            method: 'GET',
+            headers: {
+		        'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(response=>response.json())
+            .then(data => {
+                if ('detail' in data) {
+                    let user_type = localStorage.getItem("user_type");
+                    if (user_type == "Student") {
+                        window.location.href = "/studentpage";
+                    }
+                    else if (user_type == "New_Professor") {
+                        window.location.href = "/waiting";
+                    }
+                    else if (user_type == "Professor") {
+                        window.location.href = "/professorpage";
+                    }
+                }
+                else {
+                    window.location.href = "/adminpage";
+                }
+            })
+		</script>
+	</head>
+	<body>
+    <div class="page-container">
+    <div id="profile-title" class="content-wrap">
+    <div id="profile-container" class="customcontainer">
+        <div class="custompage">
+            <div class="header">
+                <div class="inner-header flex">
+                    <h1 class="is-size-1 has-text-centered">Student</h1>
+                </div>
+            </div>
+
+            <form id="student-form" class="box formcol"> 
+                <div class="field">
+                    <label class="label" for="studentname-input">Name</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" id="studentname" name="studentname-input" placeholder="John Doe" required>
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label  class="label" for="studentemail-input">DCU Email</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="email" id="studentemail" name="studentemail-input" placeholder="johndoe3@mail.dcu.ie" required>
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-envelope"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label  class="label" for="studentnumber-input">Student Number</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" id="studentnumber" name="studentnumber-input" placeholder="20301234" required>
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-address-card"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label  class="label" for="studentcourse-input">Course Code</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" id="studentcourse" name="studentcourse-input" placeholder="CASE" required>
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label  class="label" for="studentyear-input">Course Year</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" id="studentyear" name="studentyear-input" placeholder="3" required>
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-0"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="field"> 
+                    <button id="student-submit" class="button is-teal is-rounded" type="submit">I am a Student!</button>
+                </div>
+            </form> 
+        </div>
+
+        <div class="custompage">
+            <div class="header">
+                <div class="inner-header flex">
+                    <h1 class="is-size-1 has-text-centered">Professor</h1>
+                </div>
+            </div>
+    
+            <form id="professor-form" class="box formcol"> 
+                <div class="field">
+                    <label class="label" for="professorname-input">Name</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="text" id="professorname" name="professorname-input" placeholder="John Doe" required>
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label  class="label" for="professoremail-input">DCU Email</label>
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" type="email" id="professoremail" name="professoremail-input" placeholder="johndoe@mail.dcu.ie" required>
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-envelope"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field"> 
+                    <button id="professor-submit" class="button is-teal is-rounded" type="submit">I am a Professor!</button>
+                </div>
+            </form> 
+        </div>
+        </div>
+    
+        <script>
+            //function to change the page display if the user has submitted their details
+            function changeDisplay(usertype) {
+                let delForm = document.getElementById("profile-container");
+                delForm.remove();
+
+                let title = document.getElementById("profile-title");
+                let htmlString = "<div class=\"header\"><div class=\"inner-header flex\"><h1 class=\"is-size-1 has-text-centered\">"+usertype+" Details Successfully Entered</h1></div></div><br><br><br><div class=\"inner-header flex\"><h1 class=\"has-text-centered\"><a href=\"/\" class=\"button is-medium is-teal\">Continue</a></h1></div>";
+                title.innerHTML += htmlString;
+            }
+            
+            //function to submit the students details, store them into the database and assign the user a "Student" user type
+            function studentFormValidator(event){
+                event.preventDefault();
+                let submit_button = document.getElementById("student-submit");
+                submit_button.className = "button is-teal is-rounded is-loading";
+
+                let name = document.getElementById("studentname").value; 
+                let email = document.getElementById("studentemail").value;
+                let student_id = document.getElementById("studentnumber").value;
+                let course = document.getElementById("studentcourse").value;
+                let year = document.getElementById("studentyear").value;
+                let result = email.includes("@mail.dcu.ie");
+                if (result) {
+                    fetch("http://127.0.0.1:8000/apistudent/", {
+                    method: 'POST',
+                    headers: {
+		                'Accept': 'application/json',
+		                'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem("access")
+                    },
+		            body: JSON.stringify({name: name, email: email, student_id: student_id, course: course, year: year})
+	                })
+                    .then(response=>response.json())
+                    .then(data=>{
+                        if ('Error' in data) {
+                            alert(data['Error']);
+                        }
+                        else {
+                            fetch('http://127.0.0.1:8000/api/users', {
+                            method: 'GET',
+                            headers: {
+	    	                    'Accept': 'application/json',
+    		                    'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + localStorage.getItem("access")
+                            }
+                            })
+                            .then(response=>response.json())
+                            .then(data => {
+                                let user = data[0];
+                                let user_type = user['user_type'];
+                                localStorage.setItem("user_type", user_type);
+                                changeDisplay("Student");
+                            })
+                        }
+                    });
+                }
+                else{
+                    alert("INVALID EMAIL");
+                }
+            }
+
+            //function to submit the professors details, store them into the database and assign the user a "New_Professor" user type
+            function professorFormValidator(event){
+                event.preventDefault();
+                let submit_button = document.getElementById("professor-submit");
+                submit_button.className = "button is-teal is-rounded is-is-loading";
+                
+                let name = document.getElementById("professorname").value; 
+                let email = document.getElementById("professoremail").value;
+                let result = email.includes("@mail.dcu.ie");
+                if (result) {
+                    fetch("http://127.0.0.1:8000/apiprofessor/", {
+                    method: 'POST',
+                    headers: {
+		                'Accept': 'application/json',
+		                'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem("access")
+                    },
+		            body: JSON.stringify({name: name, email: email})
+	                })
+                    .then(response=>response.json())
+                    .then(data=>{
+                        if ('Error' in data) {
+                            alert(data['Error']);
+                        }
+                        else {
+                            fetch('http://127.0.0.1:8000/api/users', {
+                            method: 'GET',
+                            headers: {
+		                        'Accept': 'application/json',
+		                        'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + localStorage.getItem("access")
+                            }
+                            })
+                            .then(response=>response.json())
+                            .then(data => {
+                                let user = data[0];
+                                let user_type = user['user_type'];
+                                localStorage.setItem("user_type", user_type);
+                                window.location.href = "/waiting";
+                            })
+                        }
+                    });
+                }
+                else{
+                    alert("INVALID EMAIL");
+                }
+            }
+
+            let studentform = document.getElementById("student-form");
+            studentform.addEventListener('submit', studentFormValidator);	
+            let professorform = document.getElementById("professor-form");
+            professorform.addEventListener('submit', professorFormValidator);
+	    </script>
+<%- include('footer') -%>

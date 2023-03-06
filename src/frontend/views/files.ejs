@@ -1,0 +1,317 @@
+<%- include('header_s') -%>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="file-title" class="is-size-1 has-text-centered">Files</h1>
+    </div>
+</div>
+<br>
+<br>
+<div class="customcontainer">
+    <div class="custompage">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="srs-file-title" class="is-size-2 has-text-centered">Functional Specification</h1>
+            </div>
+        </div>
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="srs-deadline-title" class="is-size-3 has-text-centered"></h1>
+            </div>
+        </div>
+        <form id="srs-file-form" class="box formcol">
+
+            <div class="field">
+                <label class="label" for="srs-input">Functional Specification</label>
+                <div class="control">
+                    <div class="file has-name is-fullwidth">
+                        <label class="file-label">
+                          <input class="file-input" type="file" id="srs" name="srs-input" onchange='uploadSRS(this)'>
+                          <span class="file-cta is-teal">
+                            <span class="file-icon">
+                              <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                              Choose a file…
+                            </span>
+                          </span>
+                          <span id="srs-filename-input" class="file-name has-background-white">
+                            No File Chosen
+                          </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="files-srs-modal" class="modal">
+                <div id="srs-modal-background" class="modal-background"></div>
+                <div class="modal-content has-background-white py-5 px-5">
+                    <div class="header">
+                        <div class="inner-header flex">
+                            <h1 class="is-size-1 has-text-centered">Are you ready to submit?</h1>
+                        </div>
+                    </div>
+                  
+                    <footer class="modal-card-foot">
+                        <div class="column">
+                            <button id="file_srs__submit" class="button is-teal is-rounded" type="submit">Yes, Submit Functional Spec</button>
+                        </div>
+                        
+                        <br>
+                        <div class="column">
+                            <p id="srs-modal-text">No, Edit Files</p>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </form> 
+        <div class="block has-text-centered">
+            <button id="form-srs-submit" class="button is-teal is-rounded">Submit</button>
+        </div>
+    </div>
+    <div class="custompage">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="doc-file-title" class="is-size-2 has-text-centered">Documentation</h1>
+            </div>
+        </div>
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="doc-deadline-title" class="is-size-3 has-text-centered"></h1>
+            </div>
+        </div>
+        <form id="doc-file-form" class="box formcol">
+            <div class="field">
+                <label class="label" for="documentation-input">Documentation</label>
+                <div class="control">
+                    <div class="file has-name is-fullwidth">
+                        <label class="file-label">
+                          <input class="file-input" type="file" id="documentation" name="documentation-input" onchange='uploadDoc(this)'>
+                          <span class="file-cta is-teal">
+                            <span class="file-icon">
+                              <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                              Choose a file…
+                            </span>
+                          </span>
+                          <span id="doc-filename-input" class="file-name has-background-white">
+                            No File Chosen
+                          </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="files-doc-modal" class="modal">
+                <div id="doc-modal-background" class="modal-background"></div>
+                <div class="modal-content has-background-white py-5 px-5">
+                    <div class="header">
+                        <div class="inner-header flex">
+                            <h1 class="is-size-1 has-text-centered">Are you ready to submit?</h1>
+                        </div>
+                    </div>
+                  
+                    <footer class="modal-card-foot">
+                        <div class="column">
+                            <button id="file_doc__submit" class="button is-teal is-rounded" type="submit">Yes, Submit Documentation</button>
+                        </div>
+                        
+                        <br>
+                        <div class="column">
+                            <p id="doc-modal-text">No, Edit Files</p>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </form> 
+        <div class="block has-text-centered">
+            <button id="form-doc-submit" class="button is-teal is-rounded">Submit</button>
+        </div>
+    </div>
+</div>
+    
+        <script>
+            //function to display the submitted files name
+            function uploadSRS(target) {
+                document.getElementById("srs-filename-input").innerHTML = target.files[0].name;
+            }
+
+            //function to display the submitted files name
+            function uploadDoc(target) {
+                document.getElementById("doc-filename-input").innerHTML = target.files[0].name;
+            }
+
+            //function to check if the student has already submitted the files before, if so, retrieve the names of the files and display them onto both forms
+            function checkFile() {
+                fetch("http://127.0.0.1:8000/api/files/", {
+                method: 'GET',
+                headers: {
+		            'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                }
+                })
+                .then(response=>response.json())
+                .then(data=>{
+                    console.log(data);
+                    if (data.length == 0) {
+
+                    }
+                    else {
+                        let files = data[0];
+                        console.log(files);
+                        let srs_url = files['srs'];
+                        let doc_url = files['documentation'];
+
+                        if (srs_url != null) {
+                            console.log(srs_url);
+                            const srs = srs_url.split("/");
+                            console.log(srs);
+                            let srs_len = srs.length;
+                            console.log(srs_len);
+                            document.getElementById("srs-filename-input").innerHTML = srs[srs_len - 1];
+                        }
+                        if (doc_url != null) {
+                            const doc = doc_url.split("/");
+                            let doc_len = doc.length;
+                            document.getElementById("doc-filename-input").innerHTML = doc[doc_len - 1];
+                        }
+                    }
+                })
+            }
+            
+            //function to submit the file in the form on the left side and store it into the database /media/srs folder
+            function srsFormValidator(event){
+                event.preventDefault();
+                let srs = document.getElementById("srs").files[0];
+
+                let formData = new FormData();
+                formData.append('srs', srs);
+
+                fetch("http://127.0.0.1:8000/apisubmitsrs/", {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                },
+		            body: formData
+	            })
+                .then(response=>response.json())
+                .then(data=>{
+                    window.location.reload();
+                });
+            }	
+
+            //function to submit the file in the form on the right side and store it into the database /media/doc folder
+            function docFormValidator(event){
+                event.preventDefault();
+                let documentation = document.getElementById("documentation").files[0];
+
+                let formData = new FormData();
+                formData.append('documentation', documentation);
+
+                fetch("http://127.0.0.1:8000/apisubmitdoc/", {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer '+localStorage.getItem("access")
+                },
+		            body: formData
+	            })
+                .then(response=>response.json())
+                .then(data=>{
+                    window.location.reload();
+                });
+            }	
+
+            //function to check the deadlines for both files and display the deadline, if the deadline has passed, remove the form
+            function checkDeadline() {
+                fetch("http://127.0.0.1:8000/api/deadline/", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+token
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    if (data.length > 0) {
+                        let deadline = data[0];
+                        let srs = deadline['srs'];
+                        let doc = deadline['documentation'];
+
+                        let srsDate = new Date(srs);
+                        let docDate = new Date(doc);
+                        let currentDate = new Date();
+
+                        if (currentDate > srsDate) {
+                            let delForm = document.getElementById("srs-file-form");
+                            let delLink = document.getElementById("form-srs-submit");
+                            let delDeadline = document.getElementById("srs-deadline-title");
+                            delForm.remove();
+                            delLink.remove();
+                            delDeadline.remove();
+                            let title = document.getElementById("srs-file-title");
+                            title.innerHTML = "Deadline for Functional Specification Reached";
+                        }
+                        else {
+                            let srsDeadlineTitle = document.getElementById("srs-deadline-title");
+                            let srs_date = srs.split("-");
+                            srsDeadlineTitle.innerHTML = "Deadline: " + srs_date[2] + "/" + srs_date[1] + "/" + srs_date[0];
+                        }
+
+                        if (currentDate > docDate) {
+                            let delForm = document.getElementById("doc-file-form");
+                            let delLink = document.getElementById("form-doc-submit");
+                            delForm.remove();
+                            delLink.remove();
+                            let title = document.getElementById("doc-file-title");
+                            title.innerHTML = "Deadline for Documentation Reached";
+                        }
+                        else {
+                            let docDeadlineTitle = document.getElementById("doc-deadline-title");
+                            let doc_date = doc.split("-");
+                            docDeadlineTitle.innerHTML = "Deadline: " + doc_date[2] + "/" + doc_date[1] + "/" + doc_date[0];
+                        }
+                    }
+                })
+            }
+
+            //function to activate the confirmation box for submitting a form on the left side
+            function activateSRSModal() {
+                let modal = document.getElementById("files-srs-modal");
+                modal.className = "modal is-active";
+
+                const cancelP = document.querySelector('#srs-modal-text');
+                cancelP.addEventListener('click', () => {
+                    console.log("You canceled!");
+                    modal.className = "modal";
+                })
+
+                let myform = document.getElementById("srs-file-form");
+                myform.addEventListener('submit', srsFormValidator);	
+            }
+
+            //function to activate the confirmation box for submitting a form on the right side
+            function activateDOCModal() {
+                let modal = document.getElementById("files-doc-modal");
+                modal.className = "modal is-active";
+
+                const cancelP = document.querySelector('#doc-modal-text');
+                cancelP.addEventListener('click', () => {
+                    console.log("You canceled!");
+                    modal.className = "modal";
+                })
+
+                let myform = document.getElementById("doc-file-form");
+                myform.addEventListener('submit', docFormValidator);	
+            }
+
+            let srs_button = document.getElementById("form-srs-submit");
+            let doc_button = document.getElementById("form-doc-submit");
+            srs_button.addEventListener('click', activateSRSModal)
+            doc_button.addEventListener('click', activateDOCModal)
+
+            checkDeadline();
+            checkFile();
+	    </script>
+<%- include('footer') -%>

@@ -1,0 +1,34 @@
+</div>
+<footer class="footer has-background-dark">
+    <div class="content has-text-centered">
+        <p class="has-text-light">
+            <strong class="has-text-light">Design</strong>
+            made with <a class="hover" href="https://bulma.io/">Bulma</a> CSS Framework.
+            <strong class="has-text-light">Icons</strong>
+            used from <a class="hover" href="https://fontawesome.com/">FontAwesome</a> Icons.
+        </p>
+    </div>
+</footer>
+</div>
+
+<script>
+    //function to log the user out of the system if they click logout
+    let logout = document.getElementById("auth-link");
+    logout.onclick = function() {
+        localStorage.setItem("access","undefined");
+        localStorage.setItem("refresh","");
+        window.userLoggedIn = false;
+    }
+
+    //get the url of the page and find a navbar item with the same id as the url and highlight that navbar item to let the user know they are on that page
+    let pageurl = window.location.href;
+    let url = pageurl.split("/");
+    let url_length = url.length;
+    let currentpage = url[url_length - 1];
+
+    let navbar = document.getElementById(currentpage);
+    navbar.className += " nav-active"; 
+</script>
+
+</body>
+</html>

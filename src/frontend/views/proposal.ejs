@@ -1,0 +1,274 @@
+<%- include('header_s') -%>
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="proposal-title" class="is-size-1 has-text-centered">Proposal Form</h1>
+            </div>
+        </div>
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="proposal-deadline-title" class="is-size-3 has-text-centered"></h1>
+            </div>
+        </div>
+
+        <form id="proposal-form" class="box proposalformcol"> 
+
+            <div class="field">
+                <label  class="label" for="title-input">Project Title</label>
+                <div class="control">
+                    <input class="input" type="text" id="title" name="title-input" value="Title" required>
+                </div>
+            </div> 
+
+            <div class="field">
+                <label  class="label" for="staff-input">Staff-Member consulted for supervision</label>
+                <div class="control">
+                    <input class="input" type="text" id="staff" name="staff-input" value="Staff Member" required>
+                </div>
+            </div> 
+
+            <div class="field">
+                <label  class="label" for="introduction-input">Introduction: Describe the general area / problem covered by the project</label>
+                <div class="control">
+                    <!--<input class="input" type="text" id="introduction" name="introduction-input" value="Introduction" required>-->
+                    <textarea class="textarea" id="introduction" name="introduction-input" rows="10" required>Introduction</textarea>
+                </div>
+            </div> 
+
+            <div class="field">
+                <label  class="label" for="outline-input">Outline the proposed project</label>
+                <div class="control">
+                    <!--<input class="input" type="text" id="outline" name="outline-input" value="Outline" required>-->
+                    <textarea class="textarea" id="outline" name="outline-input" rows="10" required>Outline</textarea>
+                </div>
+            </div> 
+
+            <div class="field">
+                <label  class="label" for="background-input">Background: Where did the ideas come from?</label>
+                <div class="control">
+                    <!--<input class="input" type="text" id="background" name="background-input" value="Background" required>-->
+                    <textarea class="textarea" id="background" name="background-input" rows="10" required>Background</textarea>
+                </div>
+            </div> 
+
+            <div class="field">
+                <label  class="label" for="goals-input">Goals: What will the project aim to achieve? Why/when/where/how will it be useful?</label>
+                <div class="control">
+                    <!--<input class="input" type="text" id="goals" name="goals-input" value="Goals" required>-->
+                    <textarea class="textarea" id="goals" name="goals-input" rows="10" required>Goals</textarea>
+                </div>
+            </div> 
+
+            <div class="field">
+                <label  class="label" for="tools-input">Programming language(s) and tools you will use</label>
+                <div class="control">
+                    <!--<input class="input" type="text" id="tools" name="tools-input" value="Tools" required>-->
+                    <textarea class="textarea" id="tools" name="tools-input" rows="10" required>Tools</textarea>
+                </div>
+            </div>
+            <button id="proposal-save" class="button is-teal is-rounded" type="submit">Save</button>
+        </form>
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 class="is-size-1 has-text-centered"><button id="proposal-link" class="button is-teal is-rounded">Submit Proposal</button></h1>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <div id="proposal-modal" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content has-background-white py-5 px-5">
+                <div class="header">
+                    <div class="inner-header flex">
+                        <h1 class="is-size-1 has-text-centered">Are you ready to submit?</h1>
+                    </div>
+                </div>
+                
+                <footer class="modal-card-foot">
+                    <a id="proposal-link-modal" href="/submitproposal" class="button is-teal is-rounded">Yes, Submit Proposal</a>
+                    <button id="modal-cancel" class="button is-teal is-rounded">No, Keep Writing</button>
+                </footer>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+        </div>
+    
+        <script>
+            //function to get the details of the student's proposal form and display them onto the proposal form for the student to continue editing
+            function formInstance(){
+                let token = localStorage.getItem("access");
+                fetch("http://127.0.0.1:8000/api/proposals/", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    let proposal = data[0];
+                    let title = proposal['title'];
+                    let staff = proposal['staff'];
+                    let introduction = proposal['introduction'];
+                    let outline = proposal['outline'];
+                    let background = proposal['background'];
+                    let goals = proposal['goals'];
+                    let tools = proposal['tools'];
+                    document.getElementById("title").value = title;
+                    document.getElementById("staff").value = staff;
+                    document.getElementById("introduction").innerHTML = introduction;
+                    document.getElementById("outline").innerHTML = outline;
+                    document.getElementById("background").innerHTML = background;
+                    document.getElementById("goals").innerHTML = goals;
+                    document.getElementById("tools").innerHTML = tools;
+
+                })
+            }
+
+            //function to reload the page
+            function reloadPage() {
+                window.location.reload();
+            }
+
+            //function to save the student's proposal form details into the database and reload the page to view the saved details
+            function formValidator(event){
+                event.preventDefault();
+                let submit_button = document.getElementById("proposal-save");
+                submit_button.className = "button is-teal is-rounded is-is-loading";
+                
+                let title = document.getElementById("title").value;
+                let staff = document.getElementById("staff").value;
+                let introduction = document.getElementById("introduction").value;
+                let outline = document.getElementById("outline").value;
+                let background = document.getElementById("background").value;
+                let goals = document.getElementById("goals").value;
+                let tools = document.getElementById("tools").value;
+                fetch("http://127.0.0.1:8000/apiproposal/", {
+                method: 'POST',
+                headers: {
+		            'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem("access")
+                },
+		        body: JSON.stringify({title: title, staff: staff, introduction: introduction, outline: outline, background: background, goals: goals, tools: tools})
+	            })
+                .then(response=>response.json())
+                .then(data=>{
+                    submit_button.type = "button";
+                    submit_button.innerHTML = "Saved!";
+                    setInterval(reloadPage, 1000);
+                });
+            }
+
+            //functiont to check if the student has already submitted their proposal, if so delete the contents of the page and display a title saying the form was submitted
+            function checkProposal() {
+                fetch("http://127.0.0.1:8000/api/accepted/", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+token
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    if (data.length == 0) {
+                        formInstance();
+                    }
+                    else {
+                        let delForm = document.getElementById("proposal-form");
+                        let delLink = document.getElementById("proposal-link");
+                        let delDeadline = document.getElementById("proposal-deadline-title")
+                        delForm.remove();
+                        delLink.remove();
+                        delDeadline.remove();
+                        let title = document.getElementById("proposal-title");
+                        title.innerHTML = "Proposal Submitted";
+                    }
+                })
+            }
+
+            //function to check the deadline for submitting a proposal form and displaying it, if the deadline has passed, remove the form and display a title saying the deadline has passed
+            function checkDeadline() {
+                fetch("http://127.0.0.1:8000/api/deadline/", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+token
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    if (data.length > 0) {
+                        let deadline = data[0];
+                        let proposal = deadline['proposal'];
+
+                        let proposalDate = new Date(proposal);
+                        let currentDate = new Date();
+
+                        if (currentDate > proposalDate) {
+                            let delForm = document.getElementById("proposal-form");
+                            let delLink = document.getElementById("proposal-link");
+                            delForm.remove();
+                            delLink.remove();
+                            let title = document.getElementById("proposal-title");
+                            title.innerHTML = "Deadline for Proposal Reached";
+                        }
+                        else {
+                            let deadlineTitle = document.getElementById("proposal-deadline-title");
+                            let proposal_date = proposal.split("-");
+                            deadlineTitle.innerHTML = "Deadline: " + proposal_date[2] + "/" + proposal_date[1] + "/" + proposal_date[0];
+                        }
+                    }
+                })
+            }
+
+            function checkDefault() {
+                let token = localStorage.getItem("access");
+                fetch("http://127.0.0.1:8000/api/proposals/", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    let proposal = data[0];
+                    let def = proposal['default'];
+                    if (def == true) {
+
+                    }
+                    else {
+                        checkProposal();
+                        checkDeadline();
+                    }
+                })
+            }
+
+            checkDefault();
+
+            let myform = document.getElementById("proposal-form");
+            myform.addEventListener('submit', formValidator);
+
+            //functions for a confirmation box if the user chooses to submit their proposal
+            let submitButton = document.getElementById("proposal-link");
+            let modal = document.getElementById("proposal-modal");
+            let cancelButton = document.getElementById("modal-cancel");
+
+            submitButton.addEventListener('click', () => {
+                modal.className = "modal is-active";
+            })
+            cancelButton.addEventListener('click', () => {
+                modal.className = "modal";
+            })
+
+	    </script>
+
+<%- include('footer') -%>

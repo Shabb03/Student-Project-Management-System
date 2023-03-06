@@ -1,0 +1,177 @@
+<%- include('header_a') -%>
+<div id="studentlist_section1">
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="newprof-title" class="is-size-1 has-text-centered">Students with no Supervisors</h1>
+    </div>
+</div>
+<br>
+<br>
+
+<div class="header">
+    <div class="inner-header flex">
+        <h1 class="has-text-centered"><a href="/assignstudent" class="button is-teal is-medium">Assign Supervisors to Students</a></h1>
+    </div>
+</div>
+
+<br>
+<br>
+
+<table id="no-supervisors" class="table is-fullwidth is-hoverable">
+    <thead id="tablehead">
+        <tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>STUDENT NUMBER</th>
+            <th>COURSE CODE</th>
+            <th>YEAR</th>
+        </tr>
+    </thead>
+    <tbody id="default_student_list">
+  
+    </tbody>
+</table>
+</div>
+<br>
+<br>
+<br>
+<div id="studentlist_section2">
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="newprof-title" class="is-size-1 has-text-centered">Students with Supervisors</h1>
+    </div>
+</div>
+<br>
+<br>
+
+<table id="supervisors" class="table is-fullwidth is-hoverable">
+    <thead id="tablehead">
+        <tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>STUDENT NUMBER</th>
+            <th>COURSE CODE</th>
+            <th>YEAR</th>
+            <th>SUPERVISOR</th>
+        </tr>
+    </thead>
+    <tbody id="student_list">
+  
+    </tbody>
+</table>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+        //function to display a table row with the students provided details
+        function displayTable1(students) {
+            let name = students['name'];
+            let email = students['email'];
+            let student_id = students['student_id'];
+            let course = students['course'];
+            let year = students['year'];
+
+            let htmlString = "<tr><td>"+ name +"</td><td>"+ email +"</td><td>"+ student_id +"</td><td>"+ course +"</td><td>"+ year +"</td></tr>";
+            let row = document.getElementById("default_student_list");
+            row.innerHTML += htmlString;  
+        }
+
+        //function to display a table row with the students provided details
+        function displayTable2(accepted) {
+            let token = localStorage.getItem("access");
+
+            let student_url = accepted['student'];
+            let professor_url = accepted['professor'];
+            
+            fetch(student_url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let name = data['name'];
+                let email = data['email'];
+                let student_id = data['student_id'];
+                let course = data['course'];
+                let year = data['year'];
+
+                fetch(professor_url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+token
+                }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    let prof_name = data['name'];
+
+                    let htmlString = "<tr><td>"+ name +"</td><td>"+ email +"</td><td>"+ student_id +"</td><td>"+ course +"</td><td>"+ year +"</td><td>"+ prof_name +"</td></tr>";
+                    let row = document.getElementById("student_list");
+                    row.innerHTML += htmlString;
+                })
+            })  
+        }
+
+        //function to build a table with a list of students who do not have a project supervisor
+        function buildTable1(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/d_students", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                if (data.length == 0) {
+                    document.getElementById("studentlist_section1").remove();
+                }
+                else {
+                    data.forEach(element => {
+                        displayTable1(element);
+                    });
+                }
+            })
+        }
+
+        //function to build a table with a list of students who have a project supervisor including the supervisor's name
+        function buildTable2(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/accepted/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                if (data.length == 0) {
+                    document.getElementById("studentlist_section2").remove();
+                }
+                else {
+                    data.forEach(element => {
+                        displayTable2(element);
+                    });
+                }
+            })
+        }
+
+        buildTable1();
+        buildTable2();
+</script>
+<%- include('footer') -%>

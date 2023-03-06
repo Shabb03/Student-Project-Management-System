@@ -1,0 +1,65 @@
+<%- include('header_a') -%>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="reset-title" class="is-size-1 has-text-centered">Reset All Data</h1>
+    </div>
+</div>
+
+<form id="reset-form" class="box formcol"> 
+    <div class="field">
+        <label class="label" for="message-input">Input the following: (I confirm to delete all data)</label>
+        <p class="control has-icons-left">
+            <input class="input" type="text" id="message" name="message-input">
+            <span class="icon is-small is-left">
+                <i class="fa-solid fa-message"></i>
+            </span>
+        </p>
+    </div>
+
+    <div class="field"> 
+        <button id="reset-submit" class="button is-teal is-rounded" type="submit">Reset Data</button>
+    </div>
+</form> 
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+    //fetch request to submit the confirmation message and reset all data exlcuding user accounts
+    function formValidator(event){
+        event.preventDefault();
+
+        let button = document.getElementById("reset-submit");
+        button.className = "button is-teal is-rounded is-loading";
+
+        let message = document.getElementById("message").value;
+
+        fetch("http://127.0.0.1:8000/deletedata/", {
+        method: 'POST',
+        headers: {
+	        'Accept': 'application/json',
+	        'Content-Type': 'application/json',
+            "Authorization": 'Bearer '+localStorage.getItem("access")
+        },
+	    body: JSON.stringify({message: message})
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            if ('Error' in data) {
+                alert(data['Error']);
+            }
+            let form = document.getElementById("reset-form");
+            form.remove();
+            title.innerHTML = "Data has been Reset"
+        });
+    }
+
+    let form = document.getElementById("reset-form");
+    form.addEventListener('submit', formValidator);	
+</script>
+
+<%- include('footer') -%>

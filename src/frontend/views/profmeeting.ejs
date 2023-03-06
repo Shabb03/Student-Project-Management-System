@@ -1,0 +1,258 @@
+<%- include('header_p') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Meeting Form and Proposals</h1>
+        </div>
+    </div>
+
+    <form id="meeting-form" class="box formcol"> 
+        <div class="field">
+            <label class="label" for="title-input">Title</label>
+            <div class="control">
+                <input class="input" type="text" id="meeting-title" name="title-input" placeholder="Reason for Meeting" required>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="date-input">Date</label>
+            <div class="control">
+                <input class="input" type="date" id="date" name="date-input" required>
+            </div>
+        </div>
+        <div class="field">
+            <label  class="label" for="time-input">Time</label>
+            <div class="control">
+                <input class="input" type="time" id="time" name="time-input" required>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label" for="students">Student</label>
+            <div class="control">
+                <div class="select">
+                    <select id="students" class="drop-down" name="students">
+                        <option value="None">Select Student</option>
+                    </select>
+                </div>
+            </div>
+        </div> 
+        <button class="button is-teal is-rounded" type="submit">Send Meeting Proposal</button>
+    </form> 
+
+    <br>
+    <br>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="has-text-centered"><a href="/profmeetinghistory" class="button is-teal">View Meetings History</a></h1>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Proposals</h1>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <table class="table is-fullwidth has-background-grey-lighter">
+        <thead id="tablehead">
+            <tr>
+                <th>STUDENT</th>
+                <th>COURSE</th>
+                <th>YEAR</th>
+                <th>TITLE</th>
+                <th>DATE</th>
+                <th>TIME</th>
+                <th class="has-text-right">ACCEPT</th>
+                <th class="has-text-right">REJECT</th>
+            </tr>
+        </thead>
+        <tbody id="meetinglist">
+      
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script>
+        //fetch request to submit the meeting details for the chosen student to view and accept/reject
+        function formValidator(event){
+            event.preventDefault();
+            let student = document.getElementById("students").value;
+            let title = document.getElementById("meeting-title").value;
+            let date = document.getElementById("date").value;
+            let time = document.getElementById("time").value; 
+
+            if (student == "None") {
+                alert("No Studen Chosen")
+            }
+            else {
+                fetch("http://127.0.0.1:8000/apisendmeeting/", {
+                method: 'POST',
+                headers: {
+		            'Accept': 'application/json',
+		            'Content-Type': 'application/json',
+                    "Authorization": 'Bearer '+localStorage.getItem("access")
+                },
+	            body: JSON.stringify({student: student, title: title, date: date, time: time})
+	            })
+                .then(response=>response.json())
+                .then(data=>{
+                    console.log("Meeting Proposal Sent");
+                });
+                window.location.reload();
+            }
+        }
+
+        //function to accept a meeting proposal
+        function acceptTime(id) {
+            fetch('http://127.0.0.1:8000/apiacceptmeeting/', {
+            'method':'POST',
+            'headers':{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+            'body': JSON.stringify({id:id})
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                console.log("Meeting Accepted")
+            })
+            window.location.reload();
+        }
+
+        //function to reject a meeting proposal
+        function rejectTime(id) {
+            fetch('http://127.0.0.1:8000/apirejectmeeting/', {
+            'method':'POST',
+            'headers':{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            },
+            'body': JSON.stringify({id:id})
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                console.log("Meeting Rejected")
+            })
+            window.location.reload();
+        }
+
+        //function to display a list of students being supervisied onto the form to choose which student to send the meeting proposal to
+        function displayOptions(id){
+            let student_id = id['student'];
+
+            let student_number = student_id.split("/");
+            let arraySize = student_number.length;
+            let student_num = student_number[arraySize-2];
+
+            fetch(student_id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let name = data['name'];
+                let htmlString = "<option value="+student_num+">"+name+"</option>";
+                let options = document.getElementById("students");
+                options.innerHTML += htmlString;
+            })
+        }
+
+        //function to display get a list of all students the professor is supervising
+        function buildForm() {
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/accepted/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    displayOptions(element);
+                });
+            })
+        }
+
+        //function to display a table row of a meeting proposals details and students name
+        function displayTable(meeting) {
+            let meeting_id = meeting['id'];
+            let student_id = meeting['student'];
+            let title = meeting['title'];
+            let d = meeting['date'];
+            let t = meeting['time'];
+
+            const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+            let date = new Date(d);
+            let displayDate = date.getDate() + " " + months[date.getMonth()];
+            let newTime = t.split(":");
+            let time = newTime[0] + ":" + newTime[1];
+
+            fetch(student_id, {
+            'method':'GET',
+            'headers':{
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": 'Bearer '+localStorage.getItem("access")
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                let name = data['name'];
+                let course = data['course'];
+                let year = data['year'];
+
+                let htmlString = "<tr><td>"+ name +"</td><td>"+ course +"</td><td>"+ year +"</td><td>"+ title +"</td><td>"+ displayDate +"</td><td>"+ time +"</td><td><div class=\"has-text-right\"><button class=\"button is-teal\" onclick=\"acceptTime("+meeting_id+")\">Accept</button></div></td><td><div class=\"has-text-right\"><button class=\"button is-teal\" onclick=\"rejectTime("+meeting_id+")\">Reject</button></div></td></tr>";
+                let row = document.getElementById("meetinglist");
+                row.innerHTML += htmlString;
+            })
+        }
+
+        //function to build a table with a list of all meeting proposals for the professor
+        function buildTable(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/meetings/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    let tostudent = element['tostudent'];
+                    let accepted = element['accepted'];
+                    let rejected = element['rejected'];
+                    if ((tostudent == false) && (accepted == false) && (rejected == false)) {
+                        displayTable(element);
+                    }
+                });
+            })
+        }
+
+        let myform = document.getElementById("meeting-form");
+        myform.addEventListener('submit', formValidator);	
+        buildForm();
+        buildTable();
+    </script>
+
+<%- include('footer') -%>

@@ -1,0 +1,118 @@
+<%- include('header_s') -%>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="profile-title" class="is-size-1 has-text-centered">Welcome</h1>
+    </div>
+</div>
+
+<form id="student-form" class="box formcol"> 
+    <fieldset disabled>
+    <div class="field">
+        <label  class="label" for="studentemail-input">DCU Email</label>
+        <p class="control has-icons-left">
+            <input class="input" type="email" id="studentemail" name="studentemail-input" value="">
+            <span class="icon is-small is-left">
+                <i class="fa-solid fa-envelope"></i>
+            </span>
+        </p>
+    </div>
+
+    <div class="field">
+        <label  class="label" for="studentnumber-input">Student Number</label>
+        <p class="control has-icons-left">
+            <input class="input" type="text" id="studentnumber" name="studentnumber-input" value="">
+            <span class="icon is-small is-left">
+                <i class="fa-solid fa-address-card"></i>
+            </span>
+        </p>
+    </div>
+    </fieldset>
+
+    <div class="field">
+        <label  class="label" for="studentcourse-input">Course Code</label>
+        <p class="control has-icons-left">
+            <input class="input" type="text" id="studentcourse" name="studentcourse-input" value="">
+            <span class="icon is-small is-left">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </span>
+        </p>
+    </div>
+
+    <div class="field">
+        <label  class="label" for="studentyear-input">Course Year</label>
+        <p class="control has-icons-left">
+            <input class="input" type="text" id="studentyear" name="studentyear-input" value="">
+            <span class="icon is-small is-left">
+                <i class="fa-solid fa-0"></i>
+            </span>
+        </p>
+    </div>
+
+    <div class="field"> 
+        <button id="student-submit" class="button is-teal is-rounded" type="submit">Edit Details</button>
+    </div>
+</form> 
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+    //fetch request to submit the edited course and/or year details and update them in the database
+    function formValidator(event){
+        event.preventDefault();
+        let course = document.getElementById("studentcourse").value;
+        let year = document.getElementById("studentyear").value;
+
+        fetch("http://127.0.0.1:8000/apieditstudent/", {
+        method: 'POST',
+        headers: {
+	        'Accept': 'application/json',
+	        'Content-Type': 'application/json',
+            "Authorization": 'Bearer '+localStorage.getItem("access")
+        },
+	    body: JSON.stringify({course: course, year: year})
+        })
+        .then(response=>response.json())
+        .then(data=>{
+            window.location.reload();
+        });
+    }
+
+    //fetch request to get the student's details and display them onto the form
+    function buildForm() {
+        let token = localStorage.getItem("access");
+        fetch("http://127.0.0.1:8000/api/students/", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=> {
+            let student = data[0];
+            let name = student['name'];
+            let email = student['email'];
+            let student_id = student['student_id'];
+            let course = student['course'];
+            let year = student['year'];
+            document.getElementById("profile-title").innerHTML = "Welcome " + name;
+            document.getElementById("studentemail").value = email;
+            document.getElementById("studentnumber").value = student_id;
+            document.getElementById("studentcourse").value = course;
+            document.getElementById("studentyear").value = year;
+        })
+    }
+
+    let form = document.getElementById("student-form");
+    form.addEventListener('submit', formValidator);	
+
+    buildForm();
+</script>
+
+<%- include('footer') -%>

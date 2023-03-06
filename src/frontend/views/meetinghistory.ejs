@@ -1,0 +1,156 @@
+<%- include('header_s') -%>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Meeting History</h1>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="has-text-centered"><a href="/meeting" class="button is-teal">Back to Meetings Page</a></h1>
+        </div>
+    </div>
+    <br>
+    <br>
+
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Accepted Meetings</h1>
+        </div>
+    </div>
+
+    <table class="table is-bordered is-fullwidth">
+        <thead id="tablehead">
+            <tr>
+                <th>TITLE</th>
+                <th>DATE</th>
+                <th>TIME</th>
+            </tr>
+        </thead>
+        <tbody id="acceptedlist">
+      
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Pending Approval</h1>
+        </div>
+    </div>
+
+    <table class="table is-bordered is-fullwidth">
+        <thead id="tablehead">
+            <tr>
+                <th>TITLE</th>
+                <th>DATE</th>
+                <th>TIME</th>
+            </tr>
+        </thead>
+        <tbody id="pendinglist">
+      
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+
+    <div class="header">
+        <div class="inner-header flex">
+            <h1 class="is-size-1 has-text-centered">Rejected Meetings</h1>
+        </div>
+    </div>
+
+    <table class="table is-bordered is-fullwidth">
+        <thead id="tablehead">
+            <tr>
+                <th>TITLE</th>
+                <th>DATE</th>
+                <th>TIME</th>
+            </tr>
+        </thead>
+        <tbody id="rejectedlist">
+      
+        </tbody>
+    </table>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <script>
+        //function to return whether a meeting date has passed or is upcoming
+        function checkDate(meeting) {
+            var ToDate = new Date();
+            if (meeting < ToDate) {
+                return false;
+            }
+            return true;
+        }
+
+        //function to display a table row with a given meetings details
+        function displayTable(meeting) {
+            let title = meeting['title'];
+            let d = meeting['date'];
+            let t = meeting['time'];
+            let accepted = meeting['accepted'];
+            let rejected = meeting['rejected'];
+            let tostudent = meeting['tostudent'];
+
+            const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+            let date = new Date(d);
+            let displayDate = date.getDate() + " " + months[date.getMonth()];
+            let newTime = t.split(":");
+            let time = newTime[0] + ":" + newTime[1];
+
+            let htmlString = "<tr><td>"+ title +"</td><td>"+ displayDate +"</td><td>"+ time +"</td></tr>";
+            
+            if (accepted == true) {
+                if (checkDate(meeting)) {
+                    htmlString = "<tr><td>"+ title +"</td><td class=\"bg-blue\">"+ displayDate +"</td><td class=\"bg-blue\">"+ time +"</td></tr>";
+                }
+                let firstrow = document.getElementById("acceptedlist");
+                firstrow.innerHTML += htmlString;
+            }
+            else if (rejected == true) {
+                let thirdrow = document.getElementById("rejectedlist");
+                thirdrow.innerHTML += htmlString;
+            }
+            else {
+                if (tostudent == false) {
+                    let secondrow = document.getElementById("pendinglist");
+                    secondrow.innerHTML += htmlString;
+                }
+            }
+        }
+
+        //function to build tables with all meeting data
+        function buildTable(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/meetings/", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                data.forEach(element => {
+                    displayTable(element);
+                });
+            })
+        }
+
+        buildTable();
+    </script>
+
+<%- include('footer') -%>

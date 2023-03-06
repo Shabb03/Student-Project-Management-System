@@ -1,0 +1,195 @@
+<%- include('header_a') -%>
+<div class="header">
+    <div class="inner-header flex">
+        <h1 id="newprof-title" class="is-size-1 has-text-centered">List of Newly Registered Professors</h1>
+    </div>
+</div>
+<br>
+<br>
+<div id="search_bar" class="field has-text-centered">
+    <div class="control has-icons-left">
+        <input class="input" type="text" id="search-bar" onkeyup="searchBar()" placeholder="Search for Professor">
+        <span class="icon is-small is-left">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+    </div>
+</div>
+
+<table id="new-professor" class="table is-fullwidth is-hoverable">
+    <thead id="tablehead">
+        <tr>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th class="has-text-right">ACCEPT</th>
+            <th class="has-text-right">REJECT</th>
+        </tr>
+    </thead>
+    <tbody id="professorlist">
+  
+    </tbody>
+</table>
+
+<div id="accept-prof-modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content has-background-white py-5 px-5">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 class="is-size-1 has-text-centered">Allow Entry?</h1>
+                <h1 id="accept-prof-modal-title" class="is-size-3 has-text-centered"></h1>
+                <h1 class="is-size-3 has-text-centered">This Action Cannot be Undone!</h1>
+            </div>
+        </div>
+        
+        <footer id="accept-prof-footer" class="modal-card-foot">
+        </footer>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>
+
+<div id="reject-prof-modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content has-background-white py-5 px-5">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 class="is-size-1 has-text-centered">Reject Entry?</h1>
+                <h1 id="reject-prof-modal-title" class="is-size-3 has-text-centered"></h1>
+                <h1 class="is-size-3 has-text-centered">This Action Cannot be Undone!</h1>
+            </div>
+        </div>
+        
+        <footer id="reject-prof-footer" class="modal-card-foot">
+        </footer>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+        //function to remove the confirmation box
+        function removeModal() {
+            let modal1 = document.getElementById("accept-prof-modal");
+            let modal2 = document.getElementById("reject-prof-modal");
+            modal1.className = "modal";
+            modal2.className = "modal";
+        }
+
+        //function to display a confirmation box to accept the professor into the system
+        function acceptModal(email) {
+            let htmlString = "<button class=\"button is-teal is-rounded\" onclick=\"acceptProf('"+email+"')\">Yes Accept</button><button class=\"button is-teal is-rounded\" onclick=\"removeModal()\">Cancel</button>";
+            let footer = document.getElementById("accept-prof-footer");
+            let title = document.getElementById("accept-prof-modal-title");
+            footer.innerHTML = htmlString;
+            title.innerHTML = "[" + email + "]";
+
+            let modal = document.getElementById("accept-prof-modal");
+            modal.className = "modal is-active";
+        }
+
+        //function to display a confirmation box to reject the professor entry into the system
+        function rejectModal(email) {
+            let htmlString = "<button class=\"button is-teal is-rounded\" onclick=\"rejectProf('"+email+"')\">Yes Reject</button><button class=\"button is-teal is-rounded\" onclick=\"removeModal()\">Cancel</button>";
+            let footer = document.getElementById("reject-prof-footer");
+            let title = document.getElementById("reject-prof-modal-title");
+            footer.innerHTML = htmlString;
+            title.innerHTML = "[" + email + "]";
+
+            let modal = document.getElementById("reject-prof-modal");
+            modal.className = "modal is-active";
+        }
+
+        //function to accept the professor into the system and assign them a user type of "Professor"
+        function acceptProf(email) {
+            fetch("http://127.0.0.1:8000/apiacceptnewprofessor/", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            },
+            body: JSON.stringify({email: email})
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                window.location.reload();
+            })
+        }
+
+        //function to reject the professor entry into the system and remove their professor details from the database
+        function rejectProf(email) {
+            fetch("http://127.0.0.1:8000/apirejectnewprofessor/", {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+localStorage.getItem("access")
+            },
+            'body': JSON.stringify({email:email})
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                window.location.reload();
+            })
+        }
+
+        //function to display a table row with the provided professors details
+        function displayTable(profs) {
+            let name = profs['name'];
+            let email = profs['email'];
+
+            let htmlString = "<tr><td>"+ name +"</td><td>"+ email +"</td><td><div class=\"has-text-right\"><button class=\"button is-teal\" onclick=\"acceptModal('"+email+"')\">Accept</button></div></td><td><div class=\"has-text-right\"><button class=\"button is-teal\" onclick=\"rejectModal('"+email+"')\">Reject</button></div></td></tr>";
+            let row = document.getElementById("professorlist");
+            row.innerHTML += htmlString;  
+        }
+
+        //function to build a table with a list of all newly registered professors with the "New_Professor" user type
+        function buildTable(){
+            let token = localStorage.getItem("access");
+            fetch("http://127.0.0.1:8000/api/newprofessors", {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+token
+            }
+            })
+            .then(resp=>resp.json())
+            .then(data=>{
+                if (data.length == 0) {
+                    document.getElementById("newprof-title").innerHTML = "Currently No New Professors";
+                }
+                else {
+                    data.forEach(element => {
+                        displayTable(element);
+                    });
+                }
+            })
+        }
+
+        //function to take a query from the search bar and display only professors with names similar to the provided query
+        function searchBar() {
+            let input = document.getElementById("search-bar");
+            let filter = input.value.toUpperCase();
+            let table = document.getElementById("professorlist");
+            let tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+
+                let name = tr[i].getElementsByTagName("td")[0];
+                let txtValue = name.textContent || name.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+
+        buildTable();
+</script>
+<%- include('footer') -%>

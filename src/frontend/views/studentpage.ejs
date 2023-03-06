@@ -1,0 +1,221 @@
+<%- include('header_s') -%>
+<br>
+<br>
+<div class="homecontainer">
+    <div class="homepage-left">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="home-title" class="is-size-1 has-text-centered">Welcome</h1>
+            </div>
+        </div>
+
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical">
+                <div class="tile">
+                    <div class="tile is-parent">
+                        <article class="tile is-child box">
+                            <div class="header">
+                                <div class="inner-header flex">
+                                    <h1 class="title is-size-3 has-text-centered">Helpful Links</h1>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+          
+        <div class="tile is-ancestor">
+                <div class="tile">
+                    <div class="tile is-parent">
+                        <article class="tile is-child box">
+                            <a href="https://loop.dcu.ie/" target="_blank">
+                            <p class="title tile-link">Loop</p>
+                            <figure class="image is-4by3">
+                            <img src="/images/loop.png">
+                            </figure>
+                            </a>
+                        </article>
+                    </div>
+                </div>
+                <div class="tile">
+                    <div class="tile is-parent">
+                        <article class="tile is-child box">
+                            <a href="https://gitlab.computing.dcu.ie/" target="_blank">
+                            <p class="title tile-link">DCU Gitlab</p>
+                            <figure class="image is-4by3">
+                            <img src="/images/gitlab.png">
+                            </figure>
+                            </a>
+                        </article>
+                    </div>
+                </div>
+                <div class="tile">
+                    <div class="tile is-parent">
+                        <article class="tile is-child box">
+                            <a href="https://drive.google.com/" target="_blank">
+                            <p class="title tile-link">Google Drive</p>
+                            <figure class="image is-4by3">
+                            <img src="/images/drive.png">
+                            </figure>
+                            </a>
+                        </article>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <div class="homepage-right">
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 class="is-size-1 has-text-centered">Timetable</h1>
+            </div>
+        </div>
+
+        <div id="demo-display">
+
+        </div>
+
+        <div class="header">
+            <div class="inner-header flex">
+                <h1 id="meeting-title" class="is-size-3 has-text-centered">Meetings</h1>
+            </div>
+        </div>
+        <table id="timetable-table" class="table is-fullwidth">
+            <thead id="tablehead">
+                <tr>
+                    <th>DATE</th>
+                    <th>TIME</th>
+                </tr>
+            </thead>
+            <tbody id="meetinglist">
+          
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<script>
+    //function to display a table row with the meeting details
+    function displayTable(meeting) {
+        let d = meeting['date'];
+        let t = meeting['time'];
+
+        const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+        let date = new Date(d);
+        let displayDate = date.getDate() + " " + months[date.getMonth()];
+        let newTime = t.split(":");
+        let time = newTime[0] + ":" + newTime[1];
+
+        let htmlString = "<tr><td>"+ displayDate +"</td><td>" + time + "</td></tr>";
+        let row = document.getElementById("meetinglist");
+        row.innerHTML += htmlString;  
+    }
+
+    //function to build the timetable and display a list of all upcoming meetings and the demonstration timetable if it has been created
+    function buildTable(){
+        let token = localStorage.getItem("access");
+        fetch("http://127.0.0.1:8000/api/upmeetings/", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            if (data.length == 0) {
+                let table = document.getElementById("timetable-table");
+                let title = document.getElementById("meeting-title");
+                console.log(table);
+                table.remove();
+                title.innerHTML = "No Upcoming Meetings";
+            }
+            else {
+                data.forEach(element => {
+                    displayTable(element);
+                });
+            }
+        })
+
+        fetch("http://127.0.0.1:8000/api/demonstration/", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=>{
+            if (data.length == 0) {
+            }
+            else {
+                let demoDiv = document.getElementById("demo-display");
+                let demo = data[0];
+                let d = demo['date'];
+                let t = demo['time'];
+                let venue = demo['venue'];
+
+                const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+                let date = new Date(d);
+                let displayDate = date.getDate() + " " + months[date.getMonth()];
+                let newTime = t.split(":");
+                let time = newTime[0] + ":" + newTime[1];
+
+                fetch(venue, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer '+token
+                    }
+                })
+                .then(resp=>resp.json())
+                .then(data=>{
+                    let place = data['venue'];
+                    
+                    demoDiv.innerHTML += "<div class=\"header\"><div class=\"inner-header flex\"><h1 id=\"meeting-title\" class=\"is-size-3 has-text-centered\">Demonstration</h1></div></div>" +
+                                         "<table id=\"timetable-table\" class=\"table is-fullwidth\">" +
+                                         "<thead id=\"tablehead\"><tr><th>DATE</th><th>TIME</th><th>VENUE</th></tr></thead>" + 
+                                         "<tbody><tr><td>"+displayDate+"</td><td>"+time+"</td><td>"+place+"</td></tr></tbody>" +
+                                         "</table><br>";
+                })
+            }
+        })
+    }
+
+    //function to display a welcome title with the students name
+    function welcome() {
+        fetch("http://127.0.0.1:8000/api/students/", {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+token
+        }
+        })
+        .then(resp=>resp.json())
+        .then(data=> {
+            let student = data[0];
+            let name = student['name'];
+            let title = document.getElementById("home-title");
+            title.innerHTML = "Welcome " + name;
+        })
+    }
+
+    buildTable();
+    welcome();
+</script>
+
+<%- include('footer') -%>
