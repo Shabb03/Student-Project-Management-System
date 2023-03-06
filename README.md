@@ -47,7 +47,7 @@ Functional Specification Document is inside docs/2-functional-specification
 
 ## CHANGES:
 In src/backend/backend/settings.py
-Change the following
+Change the following:
 `EMAIL_HOST_USER = 'youremail@gmail.com'`
 `EMAIL_HOST_PASSWORD = '****************'`
 
